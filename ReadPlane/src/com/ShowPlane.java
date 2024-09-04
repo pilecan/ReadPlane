@@ -4,12 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
@@ -57,25 +56,26 @@ public ShowPlane() {
       JButton button = new JButton("Boom");
       panelSetup.add(button);
       setLayout(new BorderLayout());
+      SwingUtilities.invokeLater(new Runnable() {
+    	    public void run() {
+    	        JPanel panel = createPanel();
+    	        
+    	        JScrollPane aircraftPane = new JScrollPane(panel,
+    	                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+    	                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    	        add(BorderLayout.WEST, panelSetup);
+    	        add(BorderLayout.CENTER, aircraftPane);
+    	             setSize(600, 800);
+	             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	             setLocationRelativeTo(null);
+	             setVisible(true);
+  	    }});
 
-      JPanel panel = createPanel();
+            
       
-      JScrollPane aircraftPane = new JScrollPane(panel,
-              JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-              JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      add(BorderLayout.WEST, panelSetup);
-      add(BorderLayout.CENTER, aircraftPane);
-           setSize(600, 800);
-           
-           
- //     JSplitPane splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,panelSetup,panel);   
-     // splitpane.setBounds(10, 10, 400, 400);
-      
-      
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      setLocationRelativeTo(null);
-      setVisible(true);
-   }
+    }
+
+//==============================================================================
    public static JPanel createPanel() {
    	FilesFinder filesFinder = new FilesFinder();
    	filesFinder.grabPath(prop);
@@ -134,36 +134,51 @@ public ShowPlane() {
             	  
             	  System.out.println("root ->"+title[0]);
 
-       		   Object[] buttons = {"Copy to Community","Google it","Delete","Cancel"};
+       		   Object[] buttons = {"Move to Destination","Google it","Delete it","Close"};
   
        		   int returnchoice = JOptionPane.showOptionDialog(null, label3,title[1]+"/PackageVersion "+title[2], JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
          	   System.out.println("Bouton  ->"+returnchoice+"---"+label2.getName());
          	   System.out.println("source = "+source);
          	  
          	  if (returnchoice == 0) {
-             	  try {
-      				new CopyDirectories().copy(source, destination, title[0]);
-      				pause(100);
-            		FileUtils.deleteDirectory(new File(source+title[0]));
-            		panel.remove(label2);
-            		panel.remove(label1);
-            		panel.revalidate();
-            		panel.repaint();
-            		
+          		 int dialogButton = JOptionPane.YES_NO_OPTION;
+                 JOptionPane.showConfirmDialog (null, "Do you want to move "+title[0]+" in "+destination+"?","WARNING", dialogButton);
+                 if(dialogButton == JOptionPane.YES_OPTION) {
+                     try {
+           				new CopyDirectories().copy(source, destination, title[0]);
+           				pause(100);
+                 		FileUtils.deleteDirectory(new File(source+title[0]));
+     	            	
+                  		panels[number].removeAll();
+     	            	JLabel label1 = Utility.getInstance().labelMessage(title[1],"Moved in "+Utility.getInstance().getProp().getProperty("destination"));
+             		    panels[number].add(label1);
+                 		panel.updateUI();
+                 		
+                 		
 
-      			} catch (IOException e1) {
-      				// TODO Auto-generated catch block
-      				e1.printStackTrace();
-      			} ;
-         		  
+           			} catch (Exception e1) {
+           				// TODO Auto-generated catch block
+           				System.out.println(e1.getMessage());
+           				JOptionPane.showInternalMessageDialog(null, e1.getMessage());
+           			} ;
+                      	 
+                 }
+
+          		  
          	  } else if (returnchoice == 2) {
          		 int dialogButton = JOptionPane.YES_NO_OPTION;
-                 JOptionPane.showConfirmDialog (null, "Do you want to delete "+title[1]+" ?","WARNING", dialogButton);
+                 JOptionPane.showConfirmDialog (null, "Do you want to delete "+title[0]+" ?","WARNING", dialogButton);
 
                  if(dialogButton == JOptionPane.YES_OPTION) {
                 	  try {
-                  		 FileUtils.deleteDirectory(new File(source+title[0]));
-           			} catch (IOException e1) {
+                  		    FileUtils.deleteDirectory(new File(source+title[0]));
+		            		panels[number].removeAll();
+		            	
+		            		JLabel label1 = Utility.getInstance().labelMessage(title[1],"Removed");
+	            		    panels[number].add(label1);
+                    		panel.updateUI();
+                    		
+                	  } catch (Exception e1) {
            				// TODO Auto-generated catch block
            				e1.printStackTrace();
            			} ;
