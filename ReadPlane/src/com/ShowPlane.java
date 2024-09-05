@@ -141,8 +141,9 @@ public ShowPlane() {
          	   System.out.println("source = "+source);
          	  
          	  if (returnchoice == 0) {
-          		 int dialogButton = JOptionPane.YES_NO_OPTION;
-                 JOptionPane.showConfirmDialog (null, "Do you want to move "+title[0]+" in "+destination+"?","WARNING", dialogButton);
+
+         		 int dialogButton = 0;   
+          		 dialogButton=JOptionPane.showConfirmDialog (null, "Do you want to move "+title[0]+" in "+destination+"?","WARNING", dialogButton);
                  if(dialogButton == JOptionPane.YES_OPTION) {
                      try {
            				new CopyDirectories().copy(source, destination, title[0]);
