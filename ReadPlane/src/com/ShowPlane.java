@@ -8,6 +8,7 @@ import java.awt.LayoutManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -140,6 +141,8 @@ public ShowPlane() {
          	   System.out.println("Bouton  ->"+returnchoice+"---"+label2.getName());
          	   System.out.println("source = "+source);
          	  
+         	   
+         	  //move
          	  if (returnchoice == 0) {
 
          		 int dialogButton = 0;   
@@ -166,6 +169,8 @@ public ShowPlane() {
                  }
 
           		  
+                 
+               // delete
          	  } else if (returnchoice == 2) {
          		 int dialogButton = JOptionPane.YES_NO_OPTION;
                  JOptionPane.showConfirmDialog (null, "Do you want to delete "+title[0]+" ?","WARNING", dialogButton);
