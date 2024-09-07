@@ -6,6 +6,7 @@ public class Aircraft {
 	private String directory;
 	private int number;
 	private String packageVersion;
+	private String contentType;
 	
 	public String getTitle() {
 		return title;
@@ -40,6 +41,12 @@ public class Aircraft {
 	}
 	public void setPackageVersion(String packageVersion) {
 		this.packageVersion = packageVersion;
+	}
+	public String getContentType() {
+		return contentType;
+	}
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 }

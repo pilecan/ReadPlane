@@ -16,9 +16,14 @@ public class CopyDirectories {
     
     
     
-    public void copy(String source, String destination, String directory) throws IOException {
+    public void copy(String source, String destination, String directory) throws Exception {
         Path sourceDir = Paths.get( source+directory);
         Path destinationDir = Paths.get(destination+directory);
+        
+        if ((source == null) || (destination == null)) {
+        	throw new Exception("Wrong path for source or destination directory");
+        }
+        		
 
         // Traverse the file tree and copy each file/directory.
         Files.walk(sourceDir)

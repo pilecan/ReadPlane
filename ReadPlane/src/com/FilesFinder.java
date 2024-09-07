@@ -1,6 +1,7 @@
 package com;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class FilesFinder {
     private Aircraft aircraft = null;
     private List<Aircraft> listAircraft = null;
 	
-    public void findFile( String name,File file)
+    public void findFile( String name,File file, Aircraft aircraft)
     
     {
         File[] list = file.listFiles();
@@ -31,7 +32,7 @@ public class FilesFinder {
         {
             if (fil.isDirectory())
             {
-                findFile(name,fil);
+                findFile(name,fil,aircraft);
             }
             else if (name.equalsIgnoreCase(fil.getName()))
             {
@@ -41,24 +42,26 @@ public class FilesFinder {
         }
     }
     
-    public void readJson(String directory)
+    public Aircraft readJson(String directory)
     {
         JSONParser parser = new JSONParser();
+        
+        Aircraft aircraft = new Aircraft();
 
         Object obj = null;
 		try {
-			obj = parser.parse(new FileReader(directory));
-	        JSONObject jsonObject =  (JSONObject) obj;
+			 obj = parser.parse(new FileReader(directory));
+	         JSONObject jsonObject =  (JSONObject) obj;
+	    	 aircraft.setContentType((String) jsonObject.get("content_type"));
 	         aircraft.setTitle((String) jsonObject.get("title"));
 	         aircraft.setPackageVersion((String) jsonObject.get("package_version"));
-	         System.out.println((String) jsonObject.get("title"));
-        
-	        
-		} catch (IOException | ParseException e) {
+	         System.out.println((String) jsonObject.get("title")+" "+(String) jsonObject.get("content_type"));
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
     	
+		return aircraft;
     }
     
     public void grabPath(Properties prop) {
@@ -75,12 +78,21 @@ public class FilesFinder {
 	    System.out.println(Arrays.toString(directories));
 	    
 	    for (String path : directories) {
-	    	aircraft = new Aircraft();
-	    	aircraft.setPath(path);
 	    	//System.out.println(path);
-	  		  readJson(source+"/"+path+"/manifest.json");
-	          findFile( "thumbnail.JPG",new File(source+"/"+path));
-	          listAircraft.add(aircraft);
+	  		Aircraft aircraft = readJson(source+"/"+path+"/manifest.json");
+	    	try {
+				if (aircraft.getContentType().equals("AIRCRAFT") 
+					|| aircraft.getContentType().equals("LIVERY")){
+					aircraft.setPath(path);
+					findFile( "thumbnail.JPG",new File(source+"/"+path), aircraft);
+				    listAircraft.add(aircraft);
+					
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+
 	          //System.out.println(aircraft.toString());
 	    	}
     	

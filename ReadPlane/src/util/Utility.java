@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -13,7 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import com.FilesFinder;
 import com.ShowPlane;
 
 public class Utility {
@@ -45,6 +45,19 @@ public class Utility {
 	    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
 	        try {
 	            desktop.browse(uri);
+	            return true;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return false;
+	}
+	
+	public boolean openExplore(String path) {
+	    Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+	    if (desktop != null) {
+	        try {
+	        	Desktop.getDesktop().open(new File(path));
 	            return true;
 	        } catch (Exception e) {
 	            e.printStackTrace();
