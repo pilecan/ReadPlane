@@ -30,6 +30,8 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
+
+import panel.ShowResult;
 import util.CopyDirectories;
 import util.Utility;
 public class ShowPlane extends JFrame {
@@ -42,6 +44,8 @@ public class ShowPlane extends JFrame {
 	private static String destination = "g:/FS2020/Community/";
 	private static ImageIcon imageIcon ;
     private JPanel panel = null;
+    
+    private ShowResult showResult;
 
 
 	
@@ -53,57 +57,54 @@ public ShowPlane() {
 	  prop = Utility.getInstance().getProp();
       source = this.prop.getProperty("source");
       destination = this.prop.getProperty("destination");
-	  
+
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+		getContentPane().add(mainPanel);
+
       setTitle("Livery Backup");
       
- 
+      showResult = new ShowResult(source, destination);
+      
 		JTabbedPane tabPane = new JTabbedPane();
+		tabPane.addTab( "Result", showResult.getPanel());
+		tabPane.addTab( "Setup", showResult.getPanel());
+		mainPanel.add(tabPane);
 
-        SwingUtilities.invokeLater(new Runnable() {
-    	  
-	    public void run() {
-	        JPanel panelSetup = new JPanel();
-	         panel = new JPanel();
-	        panelSetup.setLayout(new GridLayout(3, 1, 2, 10));
-	        JLabel titleFrom = new JLabel("From");
-	        JLabel sourceFrom = new JLabel((String) Utility.getInstance().getProp().get("source"));
-	        
-	        
-	        JButton buttonSearch = new JButton("Search");
-	        JButton buttonFrom = new JButton("Modify");
-	        
-	        buttonSearch.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	    	        panel = createPanel(panel);
-             	//	panel.revalidate();
-             	//	panel.updateUI();
+		
+		/*
+		 * SwingUtilities.invokeLater(new Runnable() {
+		 * 
+		 * public void run() { JPanel panelSetup = new JPanel(); panel = new JPanel();
+		 * panelSetup.setLayout(new GridLayout(3, 1, 2, 10)); JLabel titleFrom = new
+		 * JLabel("From"); JLabel sourceFrom = new JLabel((String)
+		 * Utility.getInstance().getProp().get("source"));
+		 * 
+		 * 
+		 * JButton buttonSearch = new JButton("Search"); JButton buttonFrom = new
+		 * JButton("Modify");
+		 * 
+		 * buttonSearch.addActionListener(new ActionListener() {
+		 * 
+		 * @Override public void actionPerformed(ActionEvent e) { panel =
+		 * createPanel(panel); // panel.revalidate(); // panel.updateUI();
+		 * 
+		 * } }); // panel = createPanel(panel);
+		 * 
+		 * panelSetup.add(titleFrom); panelSetup.add(sourceFrom);
+		 * panelSetup.add(buttonFrom); panelSetup.add(buttonSearch); setLayout(new
+		 * BorderLayout());
+		 * 
+		 * JScrollPane aircraftPane = new JScrollPane(panel,
+		 * JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		 * JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); add(BorderLayout.NORTH, panelSetup);
+		 * add(BorderLayout.CENTER, aircraftPane); setSize(600, 800);
+		 * setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); setLocationRelativeTo(null);
+		 * setVisible(true); }});
+		 */ 
 
-	            }
-	        });
-	        //panel = createPanel(panel);
-	        JScrollPane aircraftPane = new JScrollPane(panel,
-	                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-	                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	        
-	        
-	        add(BorderLayout.NORTH, panelSetup);
-	        add(BorderLayout.CENTER, aircraftPane);
-     
-	        panelSetup.add(titleFrom);
-	        panelSetup.add(sourceFrom);
-	        panelSetup.add(buttonFrom);
-	        panelSetup.add(buttonSearch);
-	 
-	        setLayout(new BorderLayout());
-	        
-	        
-	        
-	         setSize(600, 800);
-	         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	         setLocationRelativeTo(null);
-	         setVisible(true);
-	}});
+        
+ 
 
             
       
