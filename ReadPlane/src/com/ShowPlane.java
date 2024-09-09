@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -53,9 +54,11 @@ public ShowPlane() {
       source = this.prop.getProperty("source");
       destination = this.prop.getProperty("destination");
 	  
-      setTitle("Livery Manager");
+      setTitle("Livery Backup");
       
-      
+ 
+		JTabbedPane tabPane = new JTabbedPane();
+
         SwingUtilities.invokeLater(new Runnable() {
     	  
 	    public void run() {
@@ -79,19 +82,24 @@ public ShowPlane() {
 	            }
 	        });
 	        //panel = createPanel(panel);
-        
+	        JScrollPane aircraftPane = new JScrollPane(panel,
+	                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+	                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	        
+	        
+	        add(BorderLayout.NORTH, panelSetup);
+	        add(BorderLayout.CENTER, aircraftPane);
+     
 	        panelSetup.add(titleFrom);
 	        panelSetup.add(sourceFrom);
 	        panelSetup.add(buttonFrom);
 	        panelSetup.add(buttonSearch);
+	 
 	        setLayout(new BorderLayout());
 	        
-	        JScrollPane aircraftPane = new JScrollPane(panel,
-	                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-	                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	        add(BorderLayout.NORTH, panelSetup);
-	        add(BorderLayout.CENTER, aircraftPane);
-	             setSize(600, 800);
+	        
+	        
+	         setSize(600, 800);
 	         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	         setLocationRelativeTo(null);
 	         setVisible(true);
