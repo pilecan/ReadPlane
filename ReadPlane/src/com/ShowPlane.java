@@ -2,9 +2,11 @@ package com;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -27,9 +29,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.apache.commons.io.FileUtils;
-
 
 import panel.ShowResult;
 import util.CopyDirectories;
@@ -58,19 +61,35 @@ public ShowPlane() {
       source = this.prop.getProperty("source");
       destination = this.prop.getProperty("destination");
 
-		JPanel mainPanel = new JPanel();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(700, 510);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    setLocation(dim.width/2 - getWidth()/2, dim.height/2 - getHeight()/2);
+	    setResizable(false);
+
+      JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		getContentPane().add(mainPanel);
 
       setTitle("Livery Backup");
       
-      showResult = new ShowResult(source, destination);
+      showResult = new ShowResult(source, destination,prop);
       
 		JTabbedPane tabPane = new JTabbedPane();
 		tabPane.addTab( "Result", showResult.getPanel());
-		tabPane.addTab( "Setup", showResult.getPanel());
+		tabPane.addTab( "Setup", new JPanel());
 		mainPanel.add(tabPane);
 
+	    ChangeListener changeListener = new ChangeListener() {
+	        public void stateChanged(ChangeEvent changeEvent) {
+	          JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+	          int index = sourceTabbedPane.getSelectedIndex();
+	          System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
+		          
+	        }
+	      };	
+
+	  	tabPane.addChangeListener(changeListener);
 		
 		/*
 		 * SwingUtilities.invokeLater(new Runnable() {
@@ -260,7 +279,8 @@ public ShowPlane() {
       return panel;
    }
    public static void main(String [] args) {
-      new ShowPlane();
+     ShowPlane showPlane = new ShowPlane();
+     showPlane.setVisible(true);
    }
    
 	public static void pause(long num) {
