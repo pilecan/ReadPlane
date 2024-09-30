@@ -63,11 +63,11 @@ public ShowPlane() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(700, 510);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 	    setLocation(dim.width/2 - getWidth()/2, dim.height/2 - getHeight()/2);
 	    setResizable(false);
 
-      JPanel mainPanel = new JPanel();
+        JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		getContentPane().add(mainPanel);
 
@@ -129,155 +129,6 @@ public ShowPlane() {
       
     }
 
-//==============================================================================
-   public static JPanel createPanel( JPanel panel ) {
-   	FilesFinder filesFinder = new FilesFinder();
-   	filesFinder.grabPath(prop);
-   	System.out.println(">>>>>"+filesFinder.getListAircraft().size());
- 	JPanel[]  panels  = new JPanel[filesFinder.getListAircraft().size()];
-
-
-      panel.setLayout(new GridLayout(filesFinder.getListAircraft().size(), 1, 10, 10));
-      panel.setSize(100, 50);
-      
-      for (int cpt = 0; cpt < filesFinder.getListAircraft().size(); cpt++) {
-          panels[cpt] = new JPanel();
-          
-          Integer number = new Integer(cpt);
-
-          LayoutManager overlay = new OverlayLayout(panels[cpt] );
-          panels[cpt].setLayout(overlay);
-
-          JLabel label1 = new JLabel("<html><br><br><br><br><br>"+
-        		  filesFinder.getListAircraft().get(cpt).getTitle()+
-        		  "<br>"+filesFinder.getListAircraft().get(cpt).getPath()+
-        		  "</html>");
-          label1.setForeground(Color.BLACK);
-          label1.setFont(new Font("SansSerif", Font.BOLD, 16));
-          
-          label1.setHorizontalAlignment(SwingConstants.CENTER);
-         // label1.setVerticalAlignment(SwingConstants.BOTTOM);
-          
-          label1.setAlignmentX(0.5f);
-          label1.setAlignmentY(0.5f);
-          
-          label1.setName(filesFinder.getListAircraft().get(cpt).getPath()+"|"+ filesFinder.getListAircraft().get(cpt).getTitle());
-          
-          panels[cpt].add(label1);
-          
-          JLabel label2 = new JLabel( Utility.getInstance().createImageIcon(filesFinder.getListAircraft().get(number).getDirectory()+"\\thumbnail.JPG")); 
-          label2.setName(filesFinder.getListAircraft().get(cpt).getPath()+"|"+
-          filesFinder.getListAircraft().get(cpt).getTitle()+"|"+
-          filesFinder.getListAircraft().get(cpt).getPackageVersion()	  
-          );
-
-          label2.addMouseListener(new MouseAdapter() {
-              @Override
-              public void mouseClicked(MouseEvent e) {
-            	  
-                  JLabel label3 = new JLabel( Utility.getInstance().createImageIcon(filesFinder.getListAircraft().get(number).getDirectory()+"\\thumbnail.JPG")); 
-
-                  String line =  e.toString();
-            	  line = line.substring(line.indexOf(" on "));
-            	  line = line.replace(" on ", "");
-
-            	  System.out.println("clicked ->"+line);
-            	  String[] title = line.split("\\|");
-            	  
-            	  System.out.println("root ->"+title[0]);
-
-       		   Object[] buttons = {"Move","Google","Explore","Delete","Close"};
-  
-       		   int returnchoice = JOptionPane.showOptionDialog(null, label3,title[1]+"/PackageVersion "+title[2], JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
-         	   System.out.println("Bouton  ->"+returnchoice+"---"+label2.getName());
-         	   System.out.println("source = "+source);
-         	  
-         	   
-         	  //move
-         	  if (returnchoice == 0) {
-
-         		 int dialogButton = 0;   
-          		 dialogButton=JOptionPane.showConfirmDialog (null, "Do you want to move "+title[0]+" in "+destination+"?","WARNING", dialogButton);
-                 if(dialogButton == JOptionPane.YES_OPTION) {
-                     try {
-           				new CopyDirectories().copy(source, destination, title[0]);
-           				pause(100);
-                 		FileUtils.deleteDirectory(new File(source+title[0]));
-     	            	
-                  		panels[number].removeAll();
-     	            	JLabel label1 = Utility.getInstance().labelMessage(title[1],"Moved in "+Utility.getInstance().getProp().getProperty("destination"));
-             		    panels[number].add(label1);
-                 		panel.updateUI();
-                 		
-                 		
-
-           			} catch (Exception e1) {
-           				// TODO Auto-generated catch block
-           				System.out.println(e1.getMessage());
-           				JOptionPane.showInternalMessageDialog(null, e1.getMessage());
-           			} ;
-                      	 
-                 }
-                 
-               // delete
-         	  } else if (returnchoice == 3) {
-         		 int dialogButton = JOptionPane.YES_NO_OPTION;
-         		 dialogButton =  JOptionPane.showConfirmDialog (null, "Do you want to delete "+title[0]+" ?","WARNING", dialogButton);
-
-                 if(dialogButton == JOptionPane.YES_OPTION) {
-                	  try {
-                  		    FileUtils.deleteDirectory(new File(source+title[0]));
-		            		panels[number].removeAll();
-		            	
-		            		JLabel label1 = Utility.getInstance().labelMessage(title[1],"Deleted");
-	            		    panels[number].add(label1);
-                    		panel.updateUI();
-                    		
-                	  } catch (Exception e1) {
-           				// TODO Auto-generated catch block
-           				e1.printStackTrace();
-           			} ;
-             	 
-                 }  
-         		  
-         	  } else if (returnchoice == 1) {
-         		 URI uri;
-				try {
-					String params = URLEncoder.encode(" Type=A&Type&Name=1100110&Char=!", "UTF-8");
-					uri = new URI("http://google.com/search?q="+title[1].replace(" ", "+")+"+"+"flightsim.to"+ params);
-	         		Utility.getInstance().openWebpage(uri);
-				} catch (URISyntaxException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (UnsupportedEncodingException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-              }else if (returnchoice == 2) {
-            	  
-            	  Utility.getInstance().openExplore(source+title[0]);
-            	  
-              }
-             	 
-
-         	
-
-              }
-
-          });
-
-          label2.setAlignmentX(0.5f);
-          label2.setAlignmentY(0.5f);
-          panels[cpt].add(label2);
-          
-          panel.add(panels[cpt]);
-			
-		}
-      
-      
-      return panel;
-   }
    public static void main(String [] args) {
      ShowPlane showPlane = new ShowPlane();
      showPlane.setVisible(true);
