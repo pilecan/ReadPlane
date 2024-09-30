@@ -6,7 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionListener; 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -17,14 +17,12 @@ import java.net.URLEncoder;
 import java.util.Properties;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
@@ -36,7 +34,10 @@ import util.Utility;
 public class ShowResult {
 	private String source;
 	private String destination;
-	private JPanel panel;	
+	private JPanel panelBtnUp;
+	private JPanel panelResult;
+	
+	
 	
     private static Properties prop;
 
@@ -48,15 +49,10 @@ public class ShowResult {
 	}
 	
 	public JPanel getPanel() {
-	   	FilesFinder filesFinder = new FilesFinder();
-	   	filesFinder.grabPath(prop);
-	   	System.out.println(">>>>>"+filesFinder.getListAircraft().size());
-	 	JPanel[]  panels  = new JPanel[filesFinder.getListAircraft().size()];
-		
 		   
- 	        JPanel panelSetup = new JPanel();
-	         panel = new JPanel();
-	        panelSetup.setLayout(new GridLayout(3, 1, 2, 10));
+		panelResult = new JPanel();
+	         panelBtnUp = new JPanel();
+	         panelBtnUp.setLayout(new GridLayout(2, 1, 2, 10));
 	        JLabel titleFrom = new JLabel("From");
 	        JLabel sourceFrom = new JLabel((String) Utility.getInstance().getProp().get("source"));
 	        
@@ -67,34 +63,40 @@ public class ShowResult {
 	        buttonSearch.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	    	       panel = createPanel(panel);
-             	//	panel.revalidate();
-             	//	panel.updateUI();
-
-	            }
+	            	panelResult = createPanel(panelResult);
+	               }
 	        });
-	        panel = createPanel(panel);
+	        //panel = createPanel(panel);
         
-	        panelSetup.add(titleFrom);
-	        panelSetup.add(sourceFrom);
-	        panelSetup.add(buttonFrom);
-	        panelSetup.add(buttonSearch);
-	        panel.setLayout(new BorderLayout());
+	        panelBtnUp.add(titleFrom);
+	        panelBtnUp.add(sourceFrom);
+	        panelBtnUp.add(buttonFrom);
+	        panelBtnUp.add(buttonSearch);
+	       // panelBtnUp..(new BorderLayout());
+
 	        
-	        JScrollPane aircraftPane = new JScrollPane(panel,
+	        JScrollPane aircraftPane = new JScrollPane(panelResult,
 	                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 	                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-				
-				  panel.add(BorderLayout.CENTER, panelSetup); 
-				//  panel.add(BorderLayout.CENTER, aircraftPane); 
-				 panel.setSize(600, 800);
-				          // panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-          // panel.setLocationRelativeTo(null);
-	      // panel.setVisible(true);
 	        
+	        panelBtnUp.setBounds(10, 10, 200, 60);
+
+	        aircraftPane.setBounds(10,100, 600, 300);
+	        aircraftPane.validate();
+	        aircraftPane.setVisible(true);
+	      //  aircraftPane.revalidate();
+				
+			/*
+			 * aircraftPane.add(.CENTER, aircraftPane);
+			 * aircraftPane.setSize(600, 800);
+			 */	        
 	    JPanel containerPane = new JPanel();
+	    containerPane.add(panelBtnUp);
 	    containerPane.add(aircraftPane);
-		return containerPane;
+	    containerPane.setLayout(null);
+
+	return containerPane;
+	
 	}
 	
 	   public JPanel createPanel( JPanel panel ) {
@@ -153,7 +155,7 @@ public class ShowResult {
 		            	  
 		            	  System.out.println("root ->"+title[0]);
 
-		       		   Object[] buttons = {"Move","Google","Explore","Delete","Close"};
+		       		   Object[] buttons = {"Move to","Google it","Explorer","Delete","Close"};
 		  
 		       		   int returnchoice = JOptionPane.showOptionDialog(null, label3,title[1]+"/PackageVersion "+title[2], JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
 		         	   System.out.println("Bouton  ->"+returnchoice+"---"+label2.getName());
@@ -172,7 +174,7 @@ public class ShowResult {
 		                 		FileUtils.deleteDirectory(new File(source+title[0]));
 		     	            	
 		                  		panels[number].removeAll();
-		     	            	JLabel label1 = Utility.getInstance().labelMessage(title[1],"Moved in "+Utility.getInstance().getProp().getProperty("destination"));
+		     	            	JLabel label1 = Utility.getInstance().labelMessage(title[1],"Moved to "+Utility.getInstance().getProp().getProperty("destination"));
 		             		    panels[number].add(label1);
 		                 		panel.updateUI();
 		                 		
