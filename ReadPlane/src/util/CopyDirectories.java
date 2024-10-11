@@ -17,7 +17,7 @@ public class CopyDirectories {
     
     
     public void copy(String source, String destination, String directory) throws Exception {
-        Path sourceDir = Paths.get( source+directory);
+        Path sourceDir = Paths.get( source+"\\"+directory);
         Path destinationDir = Paths.get(destination+directory);
         
         if ((source == null) || (destination == null)) {
