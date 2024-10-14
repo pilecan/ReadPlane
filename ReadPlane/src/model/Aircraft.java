@@ -5,6 +5,8 @@ public class Aircraft {
 	private String path;
 	private String directory;
 	private int number;
+	private String creator;
+	private String manufacturer;
 	private String packageVersion;
 	private String contentType;
 	
@@ -47,6 +49,18 @@ public class Aircraft {
 	}
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
+	}
+	public String getManufacturer() {
+		return manufacturer;
+	}
+	public void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+	public String getCreator() {
+		return creator;
+	}
+	public void setCreator(String creator) {
+		this.creator = creator;
 	}
 
 }
