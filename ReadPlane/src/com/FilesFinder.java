@@ -23,7 +23,7 @@ public class FilesFinder {
     private Aircraft aircraft = null;
     private List<Aircraft> listAircraft = null;
 	
-    public void findFile( String name,File file, Aircraft aircraft)
+    public void findThumbNail( String name,File file, Aircraft aircraft)
     
     {
         File[] list = file.listFiles();
@@ -32,7 +32,7 @@ public class FilesFinder {
         {
             if (fil.isDirectory())
             {
-                findFile(name,fil,aircraft);
+                findThumbNail(name,fil,aircraft);
             }
             else if (name.equalsIgnoreCase(fil.getName()))
             {
@@ -54,8 +54,10 @@ public class FilesFinder {
 	         JSONObject jsonObject =  (JSONObject) obj;
 	    	 aircraft.setContentType((String) jsonObject.get("content_type"));
 	         aircraft.setTitle((String) jsonObject.get("title"));
+	         aircraft.setCreator((String) jsonObject.get("creator"));
+	         aircraft.setManufacturer((String) jsonObject.get("manufacturer"));
 	         aircraft.setPackageVersion((String) jsonObject.get("package_version"));
-	         System.out.println((String) jsonObject.get("title")+" "+(String) jsonObject.get("content_type"));
+	      //   System.out.println((String) jsonObject.get("title")+" "+(String) jsonObject.get("content_type"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
@@ -64,7 +66,7 @@ public class FilesFinder {
 		return aircraft;
     }
     
-    public void grabPath(Properties prop) {
+    public void grabPath(Properties prop,String type, String search) {
     	source = prop.getProperty("source");
     	
     	listAircraft = new ArrayList<Aircraft>();
@@ -76,16 +78,35 @@ public class FilesFinder {
 	      }
 	    });
 	    System.out.println(Arrays.toString(directories));
+	    boolean isFound = false;
 	    
 	    for (String path : directories) {
-	    	//System.out.println(path);
+
 	  		Aircraft aircraft = readJson(source+"/"+path+"/manifest.json");
 	    	try {
 				if (aircraft.getContentType().equals("AIRCRAFT") 
 					|| aircraft.getContentType().equals("LIVERY")){
-					aircraft.setPath(path);
-					findFile( "thumbnail.JPG",new File(source+"/"+path), aircraft);
-				    listAircraft.add(aircraft);
+					if (("All".equals(type))){
+						isFound = true;
+					}
+					else if (("Directory".equals(type)) && path.toUpperCase().contains(search.toUpperCase())) {
+						isFound = true;
+					}else if (("Title".equals(type)) && aircraft.getTitle().toUpperCase().contains(search.toUpperCase())) {
+						isFound = true;
+					}else if (("Manufacturer".equals(type)) && aircraft.getManufacturer().toUpperCase().contains(search.toUpperCase())) {
+						isFound = true;
+					}else if (("Creator".equals(type)) && aircraft.getCreator().toUpperCase().contains(search.toUpperCase())) {
+						isFound = true;
+					} else {
+						isFound = false;
+					}
+					
+					if (isFound) {
+						aircraft.setPath(path);
+						findThumbNail( "thumbnail.JPG",new File(source+"/"+path), aircraft);
+					    listAircraft.add(aircraft);
+						
+					}
 					
 				}
 			} catch (Exception e) {
