@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -87,23 +88,51 @@ public class ShowLivery {
 		panelBtnSearch = new JPanel();
 
 		JButton buttonSearch = new JButton("Search");
+		JTextField textFilter = new JTextField();
+		textFilter.setEditable(false);
+
+		JComboBox<String>combofilter = new JComboBox<>();
+		combofilter.addItem("All");
+		combofilter.addItem("Directory");
+		combofilter.addItem("Title");
+		combofilter.addItem("Manufacturer");
+		combofilter.addItem("Creator");
+		combofilter.setSelectedItem("All");
+		
+		combofilter.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if ("All".equals(e.getItem())) {
+					textFilter.setEditable(false);
+				} else {
+					textFilter.setEditable(true);
+				}
+			}
+
+		});
+		
+		buttonSearch.setPreferredSize( new Dimension( 80, 30 ) );
+		textFilter.setPreferredSize( new Dimension( 80, 30 ) );
+		combofilter.setPreferredSize( new Dimension( 80, 30 ) );
 
 		buttonSearch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				panelResult.removeAll();
-				panelResult = createPanel(panelResult);
+				panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
 			}
 		});
 
 		JPanel selectBtn = getButtons();
 
 		panelBtnSearch.add(buttonSearch);
+		panelBtnSearch.add(textFilter);
+		panelBtnSearch.add(combofilter);
 
 		JScrollPane aircraftPane = new JScrollPane(panelResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		panelBtnSearch.setBounds(200, 85, 200, 80);
+		panelBtnSearch.setBounds(200, 85, 300, 80);
 
 		selectBtn.setBounds(10, 0, 700, 100);
 
@@ -121,10 +150,10 @@ public class ShowLivery {
 
 	}
 
-	public JPanel createPanel(JPanel panel) {
+	public JPanel createPanel(JPanel panel,String type, String search) {
 
 		FilesFinder filesFinder = new FilesFinder();
-		filesFinder.grabPath(prop);
+		filesFinder.grabPath(prop,type, search);
 		System.out.println(">>>>>" + filesFinder.getListAircraft().size());
 		JPanel[] panels = new JPanel[filesFinder.getListAircraft().size()];
 
@@ -182,8 +211,9 @@ public class ShowLivery {
 					int returnchoice = JOptionPane.showOptionDialog(null, label3,
 							title[1] + "/PackageVersion " + title[2], JOptionPane.DEFAULT_OPTION,
 							JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
+					
 					System.out.println("Bouton  ->" + returnchoice + "---" + label2.getName());
-					System.out.println("source = " + source);
+					System.out.println("source = " + prop.getProperty("source"));
 
 					// move
 					if (returnchoice == 0) {
@@ -261,6 +291,8 @@ public class ShowLivery {
 				}
 
 			});
+			
+
 
 			label2.setAlignmentX(0.5f);
 			label2.setAlignmentY(0.5f);
@@ -269,6 +301,7 @@ public class ShowLivery {
 			panel.add(panels[cpt]);
 
 		}
+		System.out.println(type+" "+search);
 
 		return panel;
 	}
