@@ -3,12 +3,6 @@ package com;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 import javax.swing.JFrame;
@@ -31,7 +25,7 @@ public class ManageLivery extends JFrame implements Values {
 	private String destination = "g:/FS2020/Community/";
 	private JPanel panel = null;
 
-	private ShowLivery showLivery;
+	private ShowLivery showLivery;	
 	private PanelSetup panelSetup;
 
 	public ManageLivery() {
