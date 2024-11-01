@@ -1,95 +1,131 @@
 package com;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import panel.PanelSetup;
-import panel.ShowLivery;
-import util.Utility;
+import model.Aircraft;
 
-public class ManageLivery extends JFrame implements Values {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private static Properties prop;
-	private String source = "c:/Users/Pierre/Downloads/msfs/fenix/";
-	private String destination = "g:/FS2020/Community/";
-	private JPanel panel = null;
+public class FilesFinder {
+	
+    private String source = "c:/Users/Pierre/Downloads/msfs/fenix/";
+    
+    private Aircraft aircraft = null;
+    private List<Aircraft> listAircraft = null;
+	
+    public void findThumbNail( String name,File file, Aircraft aircraft)
+    
+    {
+        File[] list = file.listFiles();
+        if(list!=null)
+        for (File fil : list)
+        {
+            if (fil.isDirectory())
+            {
+                findThumbNail(name,fil,aircraft);
+            }
+            else if (name.equalsIgnoreCase(fil.getName()))
+            {
+                System.out.println(fil.getParentFile()+"/"+name);
+                File f = new File((fil.getParentFile().toString()+"/"+name));
+                if(!(f.exists() && !f.isDirectory())) { 
+					System.out.println(aircraft.getDirectory() );
+                }
+                aircraft.setDirectory(fil.getParentFile().toString());
+				if (aircraft.getDirectory() != null && !aircraft.getDirectory().toLowerCase().contains("thumbnail.jpg")) {
+				}
+            }
+        }
+    }
+    
+    public Aircraft readJson(String directory)
+    {
+        JSONParser parser = new JSONParser();
+        
+        Aircraft aircraft = new Aircraft();
 
-	private ShowLivery showLivery;	
-	private PanelSetup panelSetup;
-
-	public ManageLivery() {
-		Utility.getInstance();
-		Utility.getInstance().readProp();
-		
-		prop = Utility.getInstance().getProp();
-		source = this.prop.getProperty("source");
-		destination = this.prop.getProperty("destination");
-		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(700, 700);
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation(dim.width / 2 - getWidth() / 2, dim.height / 2 - getHeight() / 2);
-		setResizable(true);
-
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
-		getContentPane().add(mainPanel);
-
-		setTitle("Manage Livery");
-
-		showLivery = new ShowLivery(source, destination, prop);
-		panelSetup = new PanelSetup();
-
-		//panel
-		JTabbedPane tabPane = new JTabbedPane();
-		tabPane.addTab("Result", showLivery.getPanel());
-		tabPane.addTab("Setup", panelSetup.getPanel(this));
-		mainPanel.add(tabPane);
-
-		ChangeListener changeListener = new ChangeListener() {
-			public void stateChanged(ChangeEvent changeEvent) {
-				JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
-				int index = sourceTabbedPane.getSelectedIndex();
-				System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
-
-			}
-		};
-
-		tabPane.addChangeListener(changeListener);
-
-	}
-
-	public  Properties getProp() {
-		return prop;
-	}
-
-	public  void setProp(String string) {
-		source = string;
-	}
-
-	public static void main(String[] args) {
-		ManageLivery manageLivery = new ManageLivery();
-		manageLivery.setVisible(true);
-	}
-
-	public static void pause(long num) {
+        Object obj = null;
 		try {
-			Thread.sleep(num);
-		} catch (InterruptedException e) {
-			System.err.println(e);
+			 obj = parser.parse(new FileReader(directory));
+	         JSONObject jsonObject =  (JSONObject) obj;
+	    	 aircraft.setContentType((String) jsonObject.get("content_type"));
+	         aircraft.setTitle((String) jsonObject.get("title"));
+	         aircraft.setCreator((String) jsonObject.get("creator"));
+	         aircraft.setManufacturer((String) jsonObject.get("manufacturer"));
+	         aircraft.setPackageVersion((String) jsonObject.get("package_version"));
+	      //   System.out.println((String) jsonObject.get("title")+" "+(String) jsonObject.get("content_type"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
 		}
+    	
+		return aircraft;
+    }
+    
+    public void grabPath(Properties prop,String type, String search) {
+    	source = prop.getProperty("source");
+    	
+    	listAircraft = new ArrayList<Aircraft>();
+    	
+	    File file = new File(source);
+	    String[] directories = file.list(new FilenameFilter() {
+	      public boolean accept(File current, String name) {
+	        return new File(current, name).isDirectory();
+	      }
+	    });
+	    System.out.println(Arrays.toString(directories));
+	    boolean isFound = false;
+	    
+	    for (String path : directories) {
 
-	}
+	  		Aircraft aircraft = readJson(source+"/"+path+"/manifest.json");
+	    	try {
+				if (aircraft.getContentType().equals("AIRCRAFT") 
+					|| aircraft.getContentType().equals("LIVERY")){
+					if (("All".equals(type))){
+						isFound = true;
+					}
+					else if (("Directory".equals(type)) && path.toUpperCase().contains(search.toUpperCase())) {
+						isFound = true;
+					}else if (("Title".equals(type)) && aircraft.getTitle().toUpperCase().contains(search.toUpperCase())) {
+						isFound = true;
+					}else if (("Manufacturer".equals(type)) && aircraft.getManufacturer().toUpperCase().contains(search.toUpperCase())) {
+						isFound = true;
+					}else if (("Creator".equals(type)) && aircraft.getCreator().toUpperCase().contains(search.toUpperCase())) {
+						isFound = true;
+					} else {
+						isFound = false;
+					}
+					
+					if (isFound) {
+						aircraft.setPath(path);
+						findThumbNail( "thumbnail.JPG",new File(source+"/"+path), aircraft);
+						
+					    listAircraft.add(aircraft);
+						
+					}
+					
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
 
-}
+	          //System.out.println(aircraft.toString());
+	    	}
+    	
+    }
+
+	public List<Aircraft> getListAircraft() {
+		return listAircraft;
+	}}
