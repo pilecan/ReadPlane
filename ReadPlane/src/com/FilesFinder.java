@@ -36,8 +36,14 @@ public class FilesFinder {
             }
             else if (name.equalsIgnoreCase(fil.getName()))
             {
-                System.out.println(fil.getParentFile());
+                System.out.println(fil.getParentFile()+"/"+name);
+                File f = new File((fil.getParentFile().toString()+"/"+name));
+                if(!(f.exists() && !f.isDirectory())) { 
+					System.out.println(aircraft.getDirectory() );
+                }
                 aircraft.setDirectory(fil.getParentFile().toString());
+				if (aircraft.getDirectory() != null && !aircraft.getDirectory().toLowerCase().contains("thumbnail.jpg")) {
+				}
             }
         }
     }
@@ -104,6 +110,7 @@ public class FilesFinder {
 					if (isFound) {
 						aircraft.setPath(path);
 						findThumbNail( "thumbnail.JPG",new File(source+"/"+path), aircraft);
+						
 					    listAircraft.add(aircraft);
 						
 					}
