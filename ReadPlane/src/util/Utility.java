@@ -97,6 +97,16 @@ public class Utility {
 
         return label1;
 	}
+	
+	public void pause(long num) {
+		try {
+			Thread.sleep(num);
+		} catch (InterruptedException e) {
+			System.err.println(e);
+		}
+
+	}
+
 
 
 	public Properties getProp() {
@@ -114,12 +124,12 @@ public class Utility {
 	public void savePrefProperties() {
 		Writer out = null;
 		Path currentRelativePath = Paths.get("");
-		String file = currentRelativePath.toAbsolutePath().toString() + "/ressources/path.properties";
+		String file = currentRelativePath.toAbsolutePath().toString() + "/src/ressources/path.properties";
 		File f = new File(file);
 
 		try {
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"));
-			prefs.store(out, "ShowPlane Preferences");
+			prefs.store(out, "ManageLivery Preferences");
 
 		} catch (IOException ex) {
 			System.err.println(ex.getMessage());
