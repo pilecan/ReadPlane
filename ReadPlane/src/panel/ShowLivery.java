@@ -11,8 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -21,14 +19,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -51,6 +46,7 @@ import com.FilesFinder;
 import com.ManageLivery;
 
 import model.Preference;
+import panel.PanelSetup.MyMouseListener;
 import util.CopyDirectories;
 import util.SwingUtils;
 import util.Utility;
@@ -70,7 +66,6 @@ public class ShowLivery {
 
 	private JLabel labelSource;
 	private JLabel labelDest;
-	private JLabel labelSwitch;
 
 	private JPanel folderPanel;
 
@@ -93,6 +88,8 @@ public class ShowLivery {
 		panelBtnSearch = new JPanel();
 
 		JButton buttonSearch = new JButton("Search");
+		JTextField textFilter = new JTextField();
+		textFilter.setEditable(false);
 
 		JComboBox<String>combofilter = new JComboBox<>();
 		combofilter.addItem("All");
@@ -101,20 +98,6 @@ public class ShowLivery {
 		combofilter.addItem("Manufacturer");
 		combofilter.addItem("Creator");
 		combofilter.setSelectedItem("All");
-
-		JTextField textFilter = new JTextField();
-		textFilter.setEditable(false);
-		textFilter.addKeyListener
-	      (new KeyAdapter() {
-	         public void keyPressed(KeyEvent e) {
-	           int key = e.getKeyCode();
-	           if (key == KeyEvent.VK_ENTER) {
-				panelResult.removeAll();
-				panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
-	              }
-	           }
-	         });
-
 		
 		combofilter.addItemListener(new ItemListener() {
 			@Override
@@ -128,7 +111,10 @@ public class ShowLivery {
 
 		});
 		
-		
+		buttonSearch.setPreferredSize( new Dimension( 80, 30 ) );
+		textFilter.setPreferredSize( new Dimension( 80, 30 ) );
+		combofilter.setPreferredSize( new Dimension( 80, 30 ) );
+
 		buttonSearch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -136,12 +122,6 @@ public class ShowLivery {
 				panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
 			}
 		});
-
-		
-		buttonSearch.setPreferredSize( new Dimension( 80, 30 ) );
-		textFilter.setPreferredSize( new Dimension( 80, 30 ) );
-		combofilter.setPreferredSize( new Dimension( 80, 30 ) );
-
 
 		JPanel selectBtn = getButtons();
 
@@ -174,11 +154,6 @@ public class ShowLivery {
 
 		FilesFinder filesFinder = new FilesFinder();
 		filesFinder.grabPath(prop,type, search);
-		JOptionPane.showMessageDialog(frame, filesFinder.getListAircraft().size() +" livreries found");
-		
-		CopyDirectories copyDirectories = new CopyDirectories();
-
-
 		System.out.println(">>>>>" + filesFinder.getListAircraft().size());
 		JPanel[] panels = new JPanel[filesFinder.getListAircraft().size()];
 
@@ -242,33 +217,27 @@ public class ShowLivery {
 
 					// move
 					if (returnchoice == 0) {
-						
 
 						int dialogButton = 0;
 						dialogButton = JOptionPane.showConfirmDialog(null,
-								"Do you want to move " + title[0] + " in " + prop.getProperty("destination") + "?", "WARNING",
+								"Do you want to move " + title[0] + " in " + destination + "?", "WARNING",
 								dialogButton);
 						if (dialogButton == JOptionPane.YES_OPTION) {
 							try {
-								copyDirectories.copy(prop.getProperty("source"), prop.getProperty("destination"), title[0]);
-								Utility.getInstance().pause(100);
-		                        System.gc();
-								FileUtils.forceDelete(new File(prop.getProperty("source") +"\\"+ title[0]));
-								//FileUtils.deleteDirectory(new File(prop.getProperty("source") +"\\"+ title[0]));
-
-								
-						  //      Files.move(Paths.get(prop.getProperty("source")), Paths.get(prop.getProperty("destination")), StandardCopyOption.REPLACE_EXISTING);
+								new CopyDirectories().copy(prop.getProperty("source"), destination, title[0]);
+								// pause(100);
+								FileUtils.deleteDirectory(new File(prop.getProperty("source") +"\\"+ title[0]));
 
 								panels[number].removeAll();
 								JLabel label1 = Utility.getInstance().labelMessage(title[1],
-										"Moved to " + prop.getProperty("destination"));
+										"Moved to " + Utility.getInstance().getProp().getProperty("destination"));
 								panels[number].add(label1);
 								panel.updateUI();
 
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								System.out.println(e1.getMessage());
-								//JOptionPane.showInternalMessageDialog(frame, e1.getMessage());
+								JOptionPane.showInternalMessageDialog(null, e1.getMessage());
 							}
 							;
 
@@ -324,8 +293,6 @@ public class ShowLivery {
 			});
 			
 
-			
-
 
 			label2.setAlignmentX(0.5f);
 			label2.setAlignmentY(0.5f);
@@ -347,7 +314,6 @@ public class ShowLivery {
 
 		labelSource = new JLabel();
 		labelDest = new JLabel();
-		labelSwitch = new JLabel();
 
 		hashSource = new TreeMap<>();
 		hashDest = new TreeMap<>();
@@ -364,23 +330,20 @@ public class ShowLivery {
 			public void actionPerformed(ActionEvent e) {
 				isFromAdd = true;
 				selectDirectory("Select Source Folder", "source");
-	//			Utility.getInstance().savePrefProperties();
+				// Utility.getInstance().savePrefProperties();
 			}
 		});
-		
-
-
 
 		JButton buttonDest = new JButton("Select Destination");
 		buttonDest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				isFromAdd = true;
 				selectDirectory("Select Destination folder", "destination");
-		//	     Utility.getInstance().savePrefProperties();
+				// Utility.getInstance().savePrefProperties();
 			}
 		});
 
-		labelSource.setText("Source dir "+prop.getProperty("source"));
+		labelSource.setText("Current dir "+prop.getProperty("source"));
 		labelSource.addMouseListener(new MyMouseListener());
 		labelSource.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		labelSource.setToolTipText(prop.getProperty("souce"));
@@ -407,7 +370,7 @@ public class ShowLivery {
 
 		});
 
-		labelDest.setText("Destination dir "+prop.getProperty("destination"));
+		labelDest.setText("Current dir "+prop.getProperty("destination"));
 		labelDest.addMouseListener(new MyMouseListener());
 		labelDest.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		labelDest.setToolTipText(prop.getProperty("destination"));
@@ -421,7 +384,7 @@ public class ShowLivery {
 						labelDest.setToolTipText(hashSource.get(e.getItem()).getPath());
 						comboDest.setToolTipText(hashSource.get(e.getItem()).getPath());
 						Utility.getInstance().getPrefs().put("destination", hashSource.get(e.getItem()).getPath());
-					//	Utility.getInstance().savePrefProperties();
+						Utility.getInstance().savePrefProperties();
 					}
 					isFromAdd = false;
 
@@ -431,24 +394,6 @@ public class ShowLivery {
 			}
 
 		});
-		
-		JButton buttonSwitch = new JButton("Switch");
-		
-		buttonSwitch.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				labelSwitch.setText(labelSource.getText());
-				String switchValue = prop.getProperty("source");
-				
-				labelSource.setText(labelDest.getText());
-				labelDest.setText(labelSwitch.getText());
-				
-				prop.setProperty("source", prop.getProperty("destination"));
-				prop.setProperty("destination", switchValue);
-				System.out.println(labelSource.getText());
-				System.out.println(labelDest.getText());
-			}
-		});
-
 
 		// -----------------------------------------------------------------
 
@@ -465,8 +410,6 @@ public class ShowLivery {
 		buttonSource.setBounds(x + 20, y + 35, 180, 23);
 		comboSource.setBounds(x + 180, y + 35, 120, 23);
 
-		buttonSwitch.setBounds(x + 320, y + 35, 50, 23);
-		
 		labelDest.setBounds(x + 380, y + 10, 320, 23);
 		buttonDest.setBounds(x + 380, y + 35, 180, 23);
 		comboDest.setBounds(x + 530, y + 35, 120, 23);
@@ -475,7 +418,6 @@ public class ShowLivery {
 		panelSetup.add(labelSource);
 		panelSetup.add(labelDest);
 		panelSetup.add(buttonSource);
-		panelSetup.add(buttonSwitch);
 		panelSetup.add(buttonDest);
 		panelSetup.add(comboSource);
 		panelSetup.add(comboDest);
