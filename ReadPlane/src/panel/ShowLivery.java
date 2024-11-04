@@ -67,6 +67,9 @@ public class ShowLivery {
 
 	private JComboBox<String> comboSource;
 	private JComboBox<String> comboDest;
+	
+	private JFileChooser chooser;
+	private JFileChooser chooserDestination;
 
 	private JLabel labelSource;
 	private JLabel labelDest;
@@ -121,6 +124,7 @@ public class ShowLivery {
 			public void itemStateChanged(ItemEvent e) {
 				if ("All".equals(e.getItem())) {
 					textFilter.setEditable(false);
+					textFilter.setText("");
 				} else {
 					textFilter.setEditable(true);
 				}
@@ -209,6 +213,7 @@ public class ShowLivery {
 
 			panels[cpt].add(label1);
 
+			System.out.println(filesFinder.getListAircraft().get(number).getDirectory() + "\\thumbnail.JPG");
 			JLabel label2 = new JLabel(Utility.getInstance()
 					.createImageIcon(filesFinder.getListAircraft().get(number).getDirectory() + "\\thumbnail.JPG"));
 			label2.setName(filesFinder.getListAircraft().get(cpt).getPath() + "|"
@@ -376,7 +381,7 @@ public class ShowLivery {
 			public void actionPerformed(ActionEvent e) {
 				isFromAdd = true;
 				selectDirectory("Select Destination folder", "destination");
-		//	     Utility.getInstance().savePrefProperties();
+			     Utility.getInstance().savePrefProperties();
 			}
 		});
 
@@ -487,9 +492,13 @@ public class ShowLivery {
 
 	private void selectDirectory(String title, String key) {
 
-		Utility.getInstance().readProp();
+		//Utility.getInstance().readProp();
+		
+		System.out.println(key+" - "+prop.getProperty(key));
 
-		JFileChooser chooser = selectDirectoryProgram(title, key);
+         chooser = selectDirectoryProgram(title, key);
+         
+        
 		// setAlwaysOnTop(false);
 
 		File file = null;
@@ -540,21 +549,16 @@ public class ShowLivery {
 		String[] EXTENSION = null;
 		FileNameExtensionFilter filter = null;
 		Utility.getInstance().readProp();
-		String directory = Utility.getInstance().getPrefs().getProperty(key);
 
-		JFileChooser chooser = new JFileChooser();
-		chooser.setCurrentDirectory(new java.io.File(directory));
+		chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new java.io.File(prop.getProperty(key)));
 		chooser.setDialogTitle(title);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setMultiSelectionEnabled(false);
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 		if ("source".equals(key) || "destination".equals(key)) {
-			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		} else if ("googleearth".equals(key)) {
-			EXTENSION = new String[] { "exe" };
-			filter = new FileNameExtensionFilter("googleearth.exe", EXTENSION);
-			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			chooser.setFileFilter(filter);
+			//chooserSource.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		}
 
 		return chooser;
