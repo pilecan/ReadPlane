@@ -388,7 +388,7 @@ public class ShowLivery {
 		labelSource.setText("Source dir "+prop.getProperty("source"));
 		labelSource.addMouseListener(new MyMouseListener());
 		labelSource.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		labelSource.setToolTipText(prop.getProperty("souce"));
+		labelSource.setToolTipText(prop.getProperty("source"));
 		comboSource.setToolTipText(prop.getProperty("source"));
 
 
@@ -449,6 +449,10 @@ public class ShowLivery {
 				
 				prop.setProperty("source", prop.getProperty("destination"));
 				prop.setProperty("destination", switchValue);
+				
+				labelSource.setToolTipText(prop.getProperty("source"));
+				labelDest.setToolTipText(prop.getProperty("destination"));
+				
 				System.out.println(labelSource.getText());
 				System.out.println(labelDest.getText());
 			}
