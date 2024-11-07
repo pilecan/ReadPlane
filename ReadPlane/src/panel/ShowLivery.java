@@ -63,7 +63,7 @@ public class ShowLivery {
 
 	public Map<String, Preference> hashSource;
 	public Map<String, Preference> hashDest;
-	private JPanel panelSetup;
+	private JPanel panelButtons;
 
 	private JComboBox<String> comboSource;
 	private JComboBox<String> comboDest;
@@ -156,17 +156,17 @@ public class ShowLivery {
 		JScrollPane aircraftPane = new JScrollPane(panelResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		panelBtnSearch.setBounds(200, 85, 300, 80);
+		panelBtnSearch.setBounds(200, 95, 300, 75);
 
 		selectBtn.setBounds(10, 0, 700, 100);
 
-		aircraftPane.setBounds(40, 140, 600, 400);
+		aircraftPane.setBounds(40, 165, 600, 400);
 		aircraftPane.validate();
 		aircraftPane.setVisible(true);
 
 		JPanel containerPane = new JPanel();
 		containerPane.add(selectBtn);
-		containerPane.add(panelBtnSearch);
+	    containerPane.add(panelBtnSearch);
 		containerPane.add(aircraftPane);
 		containerPane.setLayout(null);
 
@@ -347,8 +347,8 @@ public class ShowLivery {
 	public JPanel getButtons() {
 		this.frame = frame;
 
-		panelSetup = new JPanel();
-		panelSetup.setLayout(null);
+		panelButtons = new JPanel();
+		panelButtons.setLayout(null);
 
 		labelSource = new JLabel();
 		labelDest = new JLabel();
@@ -470,27 +470,27 @@ public class ShowLivery {
 		 * 
 		 * labelHeader.setBounds(310, 12, 200, 40);
 		 */
-		labelSource.setBounds(x + 20, y + 10, 320, 23);
-		buttonSource.setBounds(x + 20, y + 35, 180, 23);
-		comboSource.setBounds(x + 180, y + 35, 120, 23);
+		labelSource.setBounds(x + 20, y + 10, 320, 19);
+		buttonSource.setBounds(x + 20, y + 35, 180, 19);
+		comboSource.setBounds(x + 180, y + 35, 120, 19);
 
-		buttonSwitch.setBounds(x + 320, y + 35, 50, 23);
+		buttonSwitch.setBounds(x + 320, y + 35, 50, 19);
 		
-		labelDest.setBounds(x + 380, y + 10, 320, 23);
-		buttonDest.setBounds(x + 380, y + 35, 180, 23);
-		comboDest.setBounds(x + 530, y + 35, 120, 23);
+		labelDest.setBounds(x + 380, y + 10, 320, 19);
+		buttonDest.setBounds(x + 380, y + 35, 180, 19);
+		comboDest.setBounds(x + 530, y + 35, 120, 19);
 
-		panelSetup.add(labelHeader);
-		panelSetup.add(labelSource);
-		panelSetup.add(labelDest);
-		panelSetup.add(buttonSource);
-		panelSetup.add(buttonSwitch);
-		panelSetup.add(buttonDest);
-		panelSetup.add(comboSource);
-		panelSetup.add(comboDest);
-		panelSetup.add(folderPanel);
+		panelButtons.add(labelHeader);
+		panelButtons.add(labelSource);
+		panelButtons.add(labelDest);
+		panelButtons.add(buttonSource);
+		panelButtons.add(buttonSwitch);
+		panelButtons.add(buttonDest);
+		panelButtons.add(comboSource);
+		panelButtons.add(comboDest);
+		panelButtons.add(folderPanel);
 
-		return panelSetup;
+		return panelButtons;
 	}
 
 
