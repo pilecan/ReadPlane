@@ -1,3 +1,4 @@
+
 package util;
 
 import java.awt.Color;
@@ -20,7 +21,10 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
 import com.ManageLivery;
@@ -29,6 +33,8 @@ public class Utility {
 	private static Utility instance = new Utility();
 	private Properties prop;
 	private Properties prefs;
+	private JFrame parent;
+
 
 	public static Utility getInstance() {
 		return instance;
@@ -36,19 +42,36 @@ public class Utility {
 
 	public void readProp() {
 
-	      try (InputStream input = ManageLivery.class.getResourceAsStream("/ressources/path.properties")) {
-
-	    	  System.out.println(input);
-	            this.prop = new Properties();
-
-	            // load a properties file
-	            this.prop.load(input);
-
-	        } catch (IOException ex) {
-	            ex.printStackTrace();
-	        }
-		// TODO Auto-generated method stub
+		/*
+		 * try (InputStream input =
+		 * ManageLivery.class.getResourceAsStream("/ressources/path.properties")) {
+		 * 
+		 * System.out.println(input); this.prop = new Properties();
+		 * 
+		 * // load a properties file this.prop.load(input);
+		 * 
+		 * } catch (IOException ex) { ex.printStackTrace(); } // TODO Auto-generated
+		 * method stub
+		 */		
 		
+		Path currentRelativePath = Paths.get("");
+		
+		String file = currentRelativePath.toAbsolutePath().toString() + "\\ressources\\path.properties";
+		try {
+			BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+			this.prop = new Properties();
+			this.prop.load(is);
+			try {
+				is.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			System.err.println("Properties error " + e);
+		} catch (NullPointerException e) {
+			System.err.println("Properties null " + e);
+		}
+	
 	}
 	
 	public boolean openWebpage(URI uri) {
@@ -124,12 +147,12 @@ public class Utility {
 	public void savePrefProperties() {
 		Writer out = null;
 		Path currentRelativePath = Paths.get("");
-		String file = currentRelativePath.toAbsolutePath().toString() + "/src/ressources/path.properties";
+		String file = currentRelativePath.toAbsolutePath().toString() + "\\ressources\\path.properties";
 		File f = new File(file);
 
 		try {
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"));
-			prefs.store(out, "ManageLivery Preferences");
+			this.prop.store(out, "ManageLivery Preferences");
 
 		} catch (IOException ex) {
 			System.err.println(ex.getMessage());
@@ -146,9 +169,8 @@ public class Utility {
 		prefs = new Properties();
 
 		Path currentRelativePath = Paths.get("");
-		
-		System.out.println(ManageLivery.class.getResourceAsStream("/ressources/path.properties"));
-		String file = currentRelativePath.toAbsolutePath().toString() + "\\bin\\ressources\\path.properties";
+				
+		String file = currentRelativePath.toAbsolutePath().toString() + "\\ressources\\path.properties";
 		try {
 			BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
 			prefs.load(is);
@@ -173,9 +195,24 @@ public class Utility {
 		str = str.replace("\\", "/");
 		return str.substring(str.lastIndexOf("/")+1);
 	}
+	public void initPanelWait(JFrame parent) {
+		this.parent = parent;
+	}
 	
+	public JDialog panelWait() {
+		final JDialog dialog = new JDialog(parent, true); // modal
+		dialog.setUndecorated(true);
+		JProgressBar bar = new JProgressBar();
+		bar.setIndeterminate(true);
+		bar.setStringPainted(true);
+		bar.setString("Planet is Calling...");
+		dialog.add(bar);
+		dialog.pack();
+		dialog.setLocationRelativeTo(parent);
 
-
+		return dialog;
+		
+	}
 
 
 }
