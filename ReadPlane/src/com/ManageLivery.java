@@ -1,13 +1,17 @@
 package com;
 
+
 import java.awt.BorderLayout;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.Properties;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -15,29 +19,30 @@ import panel.PanelSetup;
 import panel.ShowLivery;
 import util.Utility;
 
-public class ManageLivery extends JFrame implements Values {
+public class ManageLivery extends JFrame {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private static Properties prop;
-	private String source = "c:/Users/Pierre/Downloads/msfs/fenix/";
-	private String destination = "g:/FS2020/Community/";
+	private static String source = "c:/Users/Pierre/Downloads/msfs/fenix/";
+	private static String destination = "g:/FS2020/Community/";
+	private static ImageIcon imageIcon;
 	private JPanel panel = null;
 
-	private ShowLivery showLivery;	
+	private ShowLivery showLivery;
 	private PanelSetup panelSetup;
 
 	public ManageLivery() {
 		Utility.getInstance();
 		Utility.getInstance().readProp();
-		
+
 		prop = Utility.getInstance().getProp();
-		source = this.prop.getProperty("source");
-		destination = this.prop.getProperty("destination");
-		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(700, 700);
+		source = ManageLivery.prop.getProperty("source");
+		destination = ManageLivery.prop.getProperty("destination");
+
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setSize(700, 510);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width / 2 - getWidth() / 2, dim.height / 2 - getHeight() / 2);
 		setResizable(true);
@@ -58,6 +63,7 @@ public class ManageLivery extends JFrame implements Values {
 		mainPanel.add(tabPane);
 
 		ChangeListener changeListener = new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent changeEvent) {
 				JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
 				int index = sourceTabbedPane.getSelectedIndex();
@@ -67,15 +73,10 @@ public class ManageLivery extends JFrame implements Values {
 		};
 
 		tabPane.addChangeListener(changeListener);
+		
+		Utility.getInstance().initPanelWait(this);
 
-	}
 
-	public  Properties getProp() {
-		return prop;
-	}
-
-	public  void setProp(String string) {
-		source = string;
 	}
 
 	public static void main(String[] args) {
