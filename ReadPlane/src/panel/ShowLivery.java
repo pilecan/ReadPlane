@@ -1,6 +1,7 @@
 package panel;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -33,6 +34,7 @@ import java.util.TreeMap;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -42,6 +44,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -78,6 +81,9 @@ public class ShowLivery {
 	private JPanel folderPanel;
 
 	private boolean isFromAdd = false;
+	
+	private JDialog dialog;
+
 
 	ManageLivery frame;
 
@@ -114,6 +120,25 @@ public class ShowLivery {
 	           if (key == KeyEvent.VK_ENTER) {
 				panelResult.removeAll();
 				panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
+		    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
+			  		{
+			  		    protected Void doInBackground()
+			  		    {
+
+							panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
+	    	  
+		     
+		  		        return null;
+		  		    }
+		  		 
+		  		    @Override
+		  		    protected void done()
+		  		    {
+		  		        dialog.dispose();
+		  		    }
+		  		};
+		  		worker.execute();
+		  		dialog.setVisible(true); // will block but with a responsive GUI		         
 	              }
 	           }
 	         });
