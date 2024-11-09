@@ -1,7 +1,6 @@
 package panel;
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -22,9 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -118,16 +114,15 @@ public class ShowLivery {
 	         public void keyPressed(KeyEvent e) {
 	           int key = e.getKeyCode();
 	           if (key == KeyEvent.VK_ENTER) {
-				panelResult.removeAll();
-				panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
+	        	   
+				dialog = Utility.getInstance().panelWait();
+
 		    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
 			  		{
 			  		    protected Void doInBackground()
 			  		    {
-
+							panelResult.removeAll();
 							panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
-	    	  
-		     
 		  		        return null;
 		  		    }
 		  		 
@@ -138,7 +133,7 @@ public class ShowLivery {
 		  		    }
 		  		};
 		  		worker.execute();
-		  		dialog.setVisible(true); // will block but with a responsive GUI		         
+		  		dialog.setVisible(true); // will block but with a responsive GUI	
 	              }
 	           }
 	         });
@@ -161,9 +156,26 @@ public class ShowLivery {
 		buttonSearch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				panelResult.removeAll();
-				panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
-			}
+				dialog = Utility.getInstance().panelWait();
+
+		    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
+			  		{
+			  		    protected Void doInBackground()
+			  		    {
+							panelResult.removeAll();
+							panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
+		  		        return null;
+		  		    }
+		  		 
+		  		    @Override
+		  		    protected void done()
+		  		    {
+		  		        dialog.dispose();
+		  		    }
+		  		};
+		  		worker.execute();
+		  		dialog.setVisible(true); // will block but with a responsive GUI		              
+			};
 		});
 
 		
@@ -194,6 +206,7 @@ public class ShowLivery {
 	    containerPane.add(panelBtnSearch);
 		containerPane.add(aircraftPane);
 		containerPane.setLayout(null);
+		
 
 		return containerPane;
 
@@ -238,7 +251,7 @@ public class ShowLivery {
 
 			panels[cpt].add(label1);
 
-			System.out.println(filesFinder.getListAircraft().get(number).getDirectory() + "\\thumbnail.JPG");
+			//System.out.println(filesFinder.getListAircraft().get(number).getDirectory() + "\\thumbnail.JPG");
 			JLabel label2 = new JLabel(Utility.getInstance()
 					.createImageIcon(filesFinder.getListAircraft().get(number).getDirectory() + "\\thumbnail.JPG"));
 			label2.setName(filesFinder.getListAircraft().get(cpt).getPath() + "|"
@@ -365,6 +378,7 @@ public class ShowLivery {
 
 		}
 		System.out.println(type+" "+search);
+		panel.revalidate();
 
 		return panel;
 	}
