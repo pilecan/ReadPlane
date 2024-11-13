@@ -29,6 +29,7 @@ import java.util.TreeMap;
 
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -223,12 +224,14 @@ public class ShowLivery {
 
 		System.out.println(">>>>>" + filesFinder.getListAircraft().size());
 		JPanel[] panels = new JPanel[filesFinder.getListAircraft().size()];
-
+		JCheckBox[] checkbox = new JCheckBox[filesFinder.getListAircraft().size()];
+ 
 		panel.setLayout(new GridLayout(filesFinder.getListAircraft().size(), 1, 10, 10));
 		panel.setSize(100, 50);
 
 		for (int cpt = 0; cpt < filesFinder.getListAircraft().size(); cpt++) {
 		    panels[cpt] = new JPanel();
+		    checkbox[cpt] = new JCheckBox();
 
 			Integer number = new Integer(cpt);
 
@@ -250,6 +253,7 @@ public class ShowLivery {
 					+ filesFinder.getListAircraft().get(cpt).getTitle());
 
 			panels[cpt].add(label1);
+			checkbox[cpt].setSelected(false);
 
 			//System.out.println(filesFinder.getListAircraft().get(number).getDirectory() + "\\thumbnail.JPG");
 			JLabel label2 = new JLabel(Utility.getInstance()
@@ -367,13 +371,11 @@ public class ShowLivery {
 			});
 			
 
-			
-
-
 			label2.setAlignmentX(0.5f);
 			label2.setAlignmentY(0.5f);
 			panels[cpt].add(label2);
 
+		//	panel.add(checkbox[cpt]);
 			panel.add(panels[cpt]);
 
 		}
