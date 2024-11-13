@@ -254,6 +254,19 @@ public class ShowLivery {
 
 			panels[cpt].add(label1);
 			checkbox[cpt].setSelected(false);
+			checkbox[cpt].setText(filesFinder.getListAircraft().get(cpt).getTitle());
+			checkbox[cpt].setToolTipText(filesFinder.getListAircraft().get(cpt).getTitle());
+			
+			checkbox[cpt].addItemListener(new ItemListener() {
+
+		            @Override
+		            public void itemStateChanged(ItemEvent e) {
+		            	System.out.println(e.toString());
+		                System.out.println(e.getStateChange() == ItemEvent.SELECTED
+		                    ? "SELECTED" : "DESELECTED");
+		            }
+		        });
+		 
 
 			//System.out.println(filesFinder.getListAircraft().get(number).getDirectory() + "\\thumbnail.JPG");
 			JLabel label2 = new JLabel(Utility.getInstance()
@@ -371,12 +384,20 @@ public class ShowLivery {
 			});
 			
 
-			label2.setAlignmentX(0.5f);
-			label2.setAlignmentY(0.5f);
-			panels[cpt].add(label2);
-
-		//	panel.add(checkbox[cpt]);
-			panel.add(panels[cpt]);
+			
+			  label2.setAlignmentX(0.5f); 
+			  label2.setAlignmentY(0.5f);
+			 			/*
+			 * panels[cpt].add(label2); panels[cpt].add(checkbox[cpt]);
+			 */
+			
+			panels[cpt].setLayout(new BorderLayout()); 
+			panels[cpt].add(label2, BorderLayout.WEST); 
+			panels[cpt].add(checkbox[cpt], BorderLayout.CENTER);
+			 		    
+		   panel.add(panels[cpt]);
+			
+			
 
 		}
 		System.out.println(type+" "+search);
