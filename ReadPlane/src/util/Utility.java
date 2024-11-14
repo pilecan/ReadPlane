@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -21,13 +20,13 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
-
-import com.ManageLivery;
 
 public class Utility {
 	private static Utility instance = new Utility();
@@ -211,6 +210,17 @@ public class Utility {
 		dialog.setLocationRelativeTo(parent);
 
 		return dialog;
+		
+	}
+	
+	public void valideCheckbox(JCheckBox[] checkbox, JButton button) {
+		button.setEnabled(false);
+		for (int i = 0; i < checkbox.length; i++) {
+			if (checkbox[i].isSelected()) {
+				button.setEnabled(true);
+				break;
+			}
+		} 
 		
 	}
 
