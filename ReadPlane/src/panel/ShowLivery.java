@@ -198,7 +198,7 @@ public class ShowLivery {
 
 		selectBtn.setBounds(10, 0, 700, 100);
 
-		aircraftPane.setBounds(40, 165, 600, 400);
+		aircraftPane.setBounds(40, 200, 600, 400);
 		aircraftPane.validate();
 		aircraftPane.setVisible(true);
 
@@ -251,11 +251,16 @@ public class ShowLivery {
 
 			label1.setName(filesFinder.getListAircraft().get(cpt).getPath() + "|"
 					+ filesFinder.getListAircraft().get(cpt).getTitle());
+			
 
 			panels[cpt].add(label1);
+			panels[cpt].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			
 			checkbox[cpt].setSelected(false);
 			checkbox[cpt].setText(filesFinder.getListAircraft().get(cpt).getTitle());
 			checkbox[cpt].setToolTipText(filesFinder.getListAircraft().get(cpt).getTitle());
+			
+			checkbox[cpt].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			
 			checkbox[cpt].addItemListener(new ItemListener() {
 
@@ -264,6 +269,7 @@ public class ShowLivery {
 		            	System.out.println(e.toString());
 		                System.out.println(e.getStateChange() == ItemEvent.SELECTED
 		                    ? "SELECTED" : "DESELECTED");
+		               // System.out.println(filesFinder.getListAircraft().get(cpt).getTitle());
 		            }
 		        });
 		 
@@ -385,15 +391,17 @@ public class ShowLivery {
 			
 
 			
-			  label2.setAlignmentX(0.5f); 
+/*			  label2.setAlignmentX(0.5f); 
 			  label2.setAlignmentY(0.5f);
-			 			/*
-			 * panels[cpt].add(label2); panels[cpt].add(checkbox[cpt]);
-			 */
+*/			
+			JLabel click = new JLabel("Click on picture");
 			
+			click.setAlignmentX(0.5f); 
+			click.setAlignmentY(0.5f);			
 			panels[cpt].setLayout(new BorderLayout()); 
-			panels[cpt].add(label2, BorderLayout.WEST); 
-			panels[cpt].add(checkbox[cpt], BorderLayout.CENTER);
+			panels[cpt].add(label2, BorderLayout.CENTER); 
+			panels[cpt].add(checkbox[cpt], BorderLayout.BEFORE_FIRST_LINE);
+			//panels[cpt].add(click);
 			 		    
 		   panel.add(panels[cpt]);
 			
