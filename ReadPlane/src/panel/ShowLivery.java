@@ -77,10 +77,11 @@ public class ShowLivery {
 
 	private JPanel folderPanel;
 
+	JButton buttonManage;
+	
 	private boolean isFromAdd = false;
 	
 	private JDialog dialog;
-
 
 	ManageLivery frame;
 
@@ -185,8 +186,14 @@ public class ShowLivery {
 		combofilter.setPreferredSize( new Dimension( 80, 30 ) );
 
 
-		JPanel selectBtn = getButtons();
+		JPanel selectBtnPanel = getButtons();
 
+		buttonManage = new JButton("Manage Group");
+		buttonManage.setEnabled(false);
+		
+		JPanel panelManage = new JPanel();
+		panelManage.add(buttonManage);
+		
 		panelBtnSearch.add(buttonSearch);
 		panelBtnSearch.add(textFilter);
 		panelBtnSearch.add(combofilter);
@@ -194,18 +201,21 @@ public class ShowLivery {
 		JScrollPane aircraftPane = new JScrollPane(panelResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		panelBtnSearch.setBounds(200, 95, 300, 75);
+		panelBtnSearch.setBounds(200, 95, 300, 55);
+		panelManage.setBounds(200, 150, 300, 75);
+		
 
-		selectBtn.setBounds(10, 0, 700, 100);
+		selectBtnPanel.setBounds(10, 0, 700, 100);
 
 		aircraftPane.setBounds(40, 200, 600, 400);
 		aircraftPane.validate();
 		aircraftPane.setVisible(true);
 
 		JPanel containerPane = new JPanel();
-		containerPane.add(selectBtn);
+		containerPane.add(selectBtnPanel);
 	    containerPane.add(panelBtnSearch);
 		containerPane.add(aircraftPane);
+		containerPane.add(panelManage);
 		containerPane.setLayout(null);
 		
 
@@ -236,15 +246,15 @@ public class ShowLivery {
 			Integer number = new Integer(cpt);
 
 			LayoutManager overlay = new OverlayLayout(panels[cpt]);
-			panels[cpt].setLayout(overlay);
+			//panels[cpt].setLayout(overlay);
 
 			JLabel label1 = new JLabel("<html><br><br><br><br><br>" + filesFinder.getListAircraft().get(cpt).getTitle()
 					+ "<br>" + filesFinder.getListAircraft().get(cpt).getPath() + "</html>");
 			label1.setForeground(Color.BLACK);
 			label1.setFont(new Font("SansSerif", Font.BOLD, 16));
+			label1.setToolTipText("Click to see more about "+filesFinder.getListAircraft().get(cpt).getTitle());
 
-			label1.setHorizontalAlignment(SwingConstants.CENTER);
-			// label1.setVerticalAlignment(SwingConstants.BOTTOM);
+
 
 			label1.setAlignmentX(0.5f);
 			label1.setAlignmentY(0.5f);
@@ -255,6 +265,7 @@ public class ShowLivery {
 
 			panels[cpt].add(label1);
 			panels[cpt].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
 			
 			checkbox[cpt].setSelected(false);
 			checkbox[cpt].setText(filesFinder.getListAircraft().get(cpt).getTitle());
