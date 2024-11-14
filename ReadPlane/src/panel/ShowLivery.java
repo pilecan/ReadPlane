@@ -188,7 +188,7 @@ public class ShowLivery {
 
 		JPanel selectBtnPanel = getButtons();
 
-		buttonManage = new JButton("Manage Group");
+		buttonManage = new JButton("Manage Selected");
 		buttonManage.setEnabled(false);
 		
 		JPanel panelManage = new JPanel();
@@ -280,6 +280,8 @@ public class ShowLivery {
 		            	System.out.println(e.toString());
 		                System.out.println(e.getStateChange() == ItemEvent.SELECTED
 		                    ? "SELECTED" : "DESELECTED");
+		                
+		                Utility.getInstance().valideCheckbox(checkbox, buttonManage);
 		               // System.out.println(filesFinder.getListAircraft().get(cpt).getTitle());
 		            }
 		        });
