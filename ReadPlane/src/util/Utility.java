@@ -224,5 +224,36 @@ public class Utility {
 		
 	}
 
+	public void swapCheckbox(JCheckBox checkboxAll, JCheckBox[] checkbox) {
+		
+		for (int i = 0; i < checkbox.length; i++) {
+			if (checkboxAll.isSelected()) {
+				checkbox[i].setSelected (true);
+			} else {
+				checkbox[i].setSelected (false);
+			}
+			
+			if (checkboxAll.isSelected()) {
+				checkboxAll.setText("("+checkbox.length+") selected");
+			} else {
+				
+				checkboxAll.setText("(0) selected");
+			}
+		} 
+		
+	}
+	public void countCheckbox(JCheckBox[] checkbox, JCheckBox checkboxAll, JButton button) {
+		button.setEnabled(false);
+		int cpt = 0;
+		for (int i = 0; i < checkbox.length; i++) {
+			if (checkbox[i].isSelected()) {
+				cpt++;
+			}
+		} 
+		checkboxAll.setText("("+cpt+") selected");
+		button.setEnabled((cpt>0));
+
+		
+	}
 
 }
