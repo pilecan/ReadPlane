@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -28,6 +29,8 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -40,7 +43,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.OverlayLayout;
-import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -77,7 +79,8 @@ public class ShowLivery {
 
 	private JPanel folderPanel;
 
-	JButton buttonManage;
+	private JButton buttonManage;
+	private JCheckBox checkboxAll;
 	
 	private boolean isFromAdd = false;
 	
@@ -188,8 +191,21 @@ public class ShowLivery {
 
 		JPanel selectBtnPanel = getButtons();
 
-		buttonManage = new JButton("Manage Selected");
+		buttonManage = new JButton("Manage Group");
 		buttonManage.setEnabled(false);
+		
+		checkboxAll = new JCheckBox();
+		
+	//	checkboxAll = new JCheckBox("", (Icon) new ImageIcon("/image/unchecked.png").getImage()) ;
+		
+	//	checkboxAll.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Pierre\\git\\repository2\\ReadPlane\\image\\unchecked.png")));
+		
+		checkboxAll.setContentAreaFilled(true);
+		
+//		checkboxAll.setBackground(new Color(194, 169, 221));
+
+		
+		//checkboxAll.set TristateCheckbox
 		
 		JPanel panelManage = new JPanel();
 		panelManage.add(buttonManage);
@@ -204,6 +220,8 @@ public class ShowLivery {
 		panelBtnSearch.setBounds(200, 95, 300, 55);
 		panelManage.setBounds(200, 150, 300, 75);
 		
+		checkboxAll.setBounds(40, 165, 30, 20);
+		
 
 		selectBtnPanel.setBounds(10, 0, 700, 100);
 
@@ -215,6 +233,7 @@ public class ShowLivery {
 		containerPane.add(selectBtnPanel);
 	    containerPane.add(panelBtnSearch);
 		containerPane.add(aircraftPane);
+		containerPane.add(checkboxAll);
 		containerPane.add(panelManage);
 		containerPane.setLayout(null);
 		
