@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -29,8 +28,6 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -220,7 +217,7 @@ public class ShowLivery {
 		panelBtnSearch.setBounds(200, 95, 300, 55);
 		panelManage.setBounds(200, 150, 300, 75);
 		
-		checkboxAll.setBounds(40, 165, 30, 20);
+		checkboxAll.setBounds(40, 165, 100, 20);
 		
 
 		selectBtnPanel.setBounds(10, 0, 700, 100);
@@ -253,14 +250,14 @@ public class ShowLivery {
 
 		System.out.println(">>>>>" + filesFinder.getListAircraft().size());
 		JPanel[] panels = new JPanel[filesFinder.getListAircraft().size()];
-		JCheckBox[] checkbox = new JCheckBox[filesFinder.getListAircraft().size()];
+		JCheckBox[] checkboxes = new JCheckBox[filesFinder.getListAircraft().size()];
  
 		panel.setLayout(new GridLayout(filesFinder.getListAircraft().size(), 1, 10, 10));
 		panel.setSize(100, 50);
 
 		for (int cpt = 0; cpt < filesFinder.getListAircraft().size(); cpt++) {
 		    panels[cpt] = new JPanel();
-		    checkbox[cpt] = new JCheckBox();
+		    checkboxes[cpt] = new JCheckBox();
 
 			Integer number = new Integer(cpt);
 
@@ -286,25 +283,31 @@ public class ShowLivery {
 			panels[cpt].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 			
-			checkbox[cpt].setSelected(false);
-			checkbox[cpt].setText(filesFinder.getListAircraft().get(cpt).getTitle());
-			checkbox[cpt].setToolTipText(filesFinder.getListAircraft().get(cpt).getTitle());
+			checkboxes[cpt].setSelected(false);
+			checkboxes[cpt].setText(filesFinder.getListAircraft().get(cpt).getTitle());
+			checkboxes[cpt].setToolTipText(filesFinder.getListAircraft().get(cpt).getPath());
 			
-			checkbox[cpt].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			checkboxes[cpt].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			
-			checkbox[cpt].addItemListener(new ItemListener() {
+			checkboxes[cpt].addItemListener(new ItemListener() {
 
 		            @Override
 		            public void itemStateChanged(ItemEvent e) {
-		            	System.out.println(e.toString());
-		                System.out.println(e.getStateChange() == ItemEvent.SELECTED
-		                    ? "SELECTED" : "DESELECTED");
-		                
-		                Utility.getInstance().valideCheckbox(checkbox, buttonManage);
-		               // System.out.println(filesFinder.getListAircraft().get(cpt).getTitle());
+		                Utility.getInstance().valideCheckbox(checkboxes, buttonManage);
+		                Utility.getInstance().countCheckbox(checkboxes, checkboxAll, buttonManage);
 		            }
 		        });
-		 
+			
+			checkboxAll.setText("(0) checked");
+	
+			checkboxAll.addItemListener(new ItemListener() {
+	            @Override
+	            public void itemStateChanged(ItemEvent e) {
+	                Utility.getInstance().swapCheckbox(checkboxAll, checkboxes);
+	               // System.out.println(filesFinder.getListAircraft().get(cpt).getTitle());
+	            }
+	        });
+
 
 			//System.out.println(filesFinder.getListAircraft().get(number).getDirectory() + "\\thumbnail.JPG");
 			JLabel label2 = new JLabel(Utility.getInstance()
@@ -332,7 +335,7 @@ public class ShowLivery {
 					Object[] buttons = { "Move to", "Google it", "Directory", "Delete", "Close" };
 
 					int returnchoice = JOptionPane.showOptionDialog(null, label3,
-							title[1] + "/PackageVersion " + title[2], JOptionPane.DEFAULT_OPTION,
+							title[1] +"/"+title[0]+ "/V. " + title[2], JOptionPane.DEFAULT_OPTION,
 							JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
 					
 					System.out.println("Bouton  ->" + returnchoice + "---" + label2.getName());
@@ -432,7 +435,7 @@ public class ShowLivery {
 			click.setAlignmentY(0.5f);			
 			panels[cpt].setLayout(new BorderLayout()); 
 			panels[cpt].add(label2, BorderLayout.CENTER); 
-			panels[cpt].add(checkbox[cpt], BorderLayout.BEFORE_FIRST_LINE);
+			panels[cpt].add(checkboxes[cpt], BorderLayout.BEFORE_FIRST_LINE);
 			//panels[cpt].add(click);
 			 		    
 		   panel.add(panels[cpt]);
