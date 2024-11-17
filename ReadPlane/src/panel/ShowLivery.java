@@ -201,34 +201,33 @@ public class ShowLivery {
 		buttonManage.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JPanel panel = new JPanel();
+				String line = "<html><tr valign =top>";
+				int cptChecked = 1;
+				
 				for (int cpt = 0; cpt <= listAircraft.size()-1; cpt++) {
 					System.out.println(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath());
 
 					if (checkboxes[cpt].isSelected()){
 						System.out.println(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath());
-						
-						panel.add(new JLabel(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath()+"\\n"));
-
+						line += (cptChecked++)+")"+listAircraft.get(cpt).getTitle()+" / "+listAircraft.get(cpt).getPath()+"<br>";
 					}
 					
-					//System.out.println(listAircraft.get(cpt).getNumber()+"-"+listAircraft.get(cpt).getTitle());
 				}
-				 
-				JScrollPane editorScrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-						JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 				
+				line += "</tr></html>";
+			 
+				JScrollPane editorScrollPane = new JScrollPane(new JLabel(line), 
+						JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+						JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 				
-				editorScrollPane.setPreferredSize(new Dimension(250, 145));
-				editorScrollPane.setMinimumSize(new Dimension(10, 10));
-
+				editorScrollPane.setPreferredSize(new Dimension(350, 145));
+				editorScrollPane.setMinimumSize(new Dimension(300, 100));
 				
 				Object[] buttons = { "Move to", "Delete All", "Cancel" };
 
 				int returnchoice = JOptionPane.showOptionDialog(null, editorScrollPane,
-						"title", JOptionPane.DEFAULT_OPTION,
+						(cptChecked-1)+" liveries selected", JOptionPane.DEFAULT_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
-
 
 			};
 		});		
@@ -391,13 +390,11 @@ public class ShowLivery {
 								dialogButton);
 						if (dialogButton == JOptionPane.YES_OPTION) {
 							try {
-								copyDirectories.copy(prop.getProperty("source"), prop.getProperty("destination"), title[0]);
-								Utility.getInstance().pause(100);
-		                        System.gc();
-								FileUtils.forceDelete(new File(prop.getProperty("source") +"\\"+ title[0]));
-								//FileUtils.deleteDirectory(new File(prop.getProperty("source") +"\\"+ title[0]));
-
 								
+								Utility.getInstance().copieDirectory(title[0]);
+								Utility.getInstance().pause(100);
+		                        Utility.getInstance().deleteDirectory(title[0]);
+									
 						  //      Files.move(Paths.get(prop.getProperty("source")), Paths.get(prop.getProperty("destination")), StandardCopyOption.REPLACE_EXISTING);
 
 								panels[number].removeAll();
