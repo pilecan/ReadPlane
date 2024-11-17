@@ -28,11 +28,15 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
+import org.apache.commons.io.FileUtils;
+
 public class Utility {
 	private static Utility instance = new Utility();
 	private Properties prop;
 	private Properties prefs;
 	private JFrame parent;
+	private CopyDirectories copyDirectories;
+
 
 
 	public static Utility getInstance() {
@@ -253,6 +257,29 @@ public class Utility {
 		checkboxAll.setText("("+cpt+") selected");
 		button.setEnabled((cpt>0));
 
+		
+	}
+	
+	public void copieDirectory(String name) {
+		copyDirectories = new CopyDirectories();
+		try {
+			copyDirectories.copy(prop.getProperty("source"), prop.getProperty("destination"), name);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	public void deleteDirectory(String name) {
+        System.gc();
+		try {
+			FileUtils.forceDelete(new File(prop.getProperty("source") +"\\"+ name));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
