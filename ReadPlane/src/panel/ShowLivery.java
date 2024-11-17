@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -49,6 +50,7 @@ import org.apache.commons.io.FileUtils;
 import com.FilesFinder;
 import com.ManageLivery;
 
+import model.Aircraft;
 import model.Preference;
 import util.CopyDirectories;
 import util.SwingUtils;
@@ -84,6 +86,11 @@ public class ShowLivery {
 	private JDialog dialog;
 
 	ManageLivery frame;
+	
+	private JPanel[] panels;
+	private JCheckBox[] checkboxes;
+	
+    private List<Aircraft> listAircraft = null;
 
 	private static Properties prop;
 
@@ -188,21 +195,47 @@ public class ShowLivery {
 
 		JPanel selectBtnPanel = getButtons();
 
-		buttonManage = new JButton("Manage Group");
+		buttonManage = new JButton("Manage Selected");
 		buttonManage.setEnabled(false);
+		
+		buttonManage.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JPanel panel = new JPanel();
+				for (int cpt = 0; cpt <= listAircraft.size()-1; cpt++) {
+					System.out.println(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath());
+
+					if (checkboxes[cpt].isSelected()){
+						System.out.println(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath());
+						
+						panel.add(new JLabel(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath()+"\\n"));
+
+					}
+					
+					//System.out.println(listAircraft.get(cpt).getNumber()+"-"+listAircraft.get(cpt).getTitle());
+				}
+				 
+				JScrollPane editorScrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+						JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				
+				
+				editorScrollPane.setPreferredSize(new Dimension(250, 145));
+				editorScrollPane.setMinimumSize(new Dimension(10, 10));
+
+				
+				Object[] buttons = { "Move to", "Delete All", "Cancel" };
+
+				int returnchoice = JOptionPane.showOptionDialog(null, editorScrollPane,
+						"title", JOptionPane.DEFAULT_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
+
+
+			};
+		});		
 		
 		checkboxAll = new JCheckBox();
 		
-	//	checkboxAll = new JCheckBox("", (Icon) new ImageIcon("/image/unchecked.png").getImage()) ;
-		
-	//	checkboxAll.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Pierre\\git\\repository2\\ReadPlane\\image\\unchecked.png")));
-		
 		checkboxAll.setContentAreaFilled(true);
-		
-//		checkboxAll.setBackground(new Color(194, 169, 221));
-
-		
-		//checkboxAll.set TristateCheckbox
 		
 		JPanel panelManage = new JPanel();
 		panelManage.add(buttonManage);
@@ -243,19 +276,23 @@ public class ShowLivery {
 
 		FilesFinder filesFinder = new FilesFinder();
 		filesFinder.grabPath(prop,type, search);
+		
 		JOptionPane.showMessageDialog(frame, filesFinder.getListAircraft().size() +" livreries found");
+		
+		listAircraft = filesFinder.getListAircraft();
 		
 		CopyDirectories copyDirectories = new CopyDirectories();
 
 
-		System.out.println(">>>>>" + filesFinder.getListAircraft().size());
-		JPanel[] panels = new JPanel[filesFinder.getListAircraft().size()];
-		JCheckBox[] checkboxes = new JCheckBox[filesFinder.getListAircraft().size()];
+		panels = new JPanel[filesFinder.getListAircraft().size()];
+		checkboxes = new JCheckBox[filesFinder.getListAircraft().size()];
  
+		System.out.println("checkboxes>>>>>"+checkboxes.length);
+		
 		panel.setLayout(new GridLayout(filesFinder.getListAircraft().size(), 1, 10, 10));
 		panel.setSize(100, 50);
 
-		for (int cpt = 0; cpt < filesFinder.getListAircraft().size(); cpt++) {
+		for (int cpt = 0; cpt <= filesFinder.getListAircraft().size()-1; cpt++) {
 		    panels[cpt] = new JPanel();
 		    checkboxes[cpt] = new JCheckBox();
 
@@ -299,11 +336,14 @@ public class ShowLivery {
 		        });
 			
 			checkboxAll.setText("(0) checked");
+			checkboxAll.setSelected(false);
 	
 			checkboxAll.addItemListener(new ItemListener() {
 	            @Override
 	            public void itemStateChanged(ItemEvent e) {
 	                Utility.getInstance().swapCheckbox(checkboxAll, checkboxes);
+	              //  Utility.getInstance().countCheckbox(checkboxes, checkboxAll, buttonManage);
+
 	               // System.out.println(filesFinder.getListAircraft().get(cpt).getTitle());
 	            }
 	        });
