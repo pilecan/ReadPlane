@@ -229,6 +229,14 @@ public class ShowLivery {
 						(cptChecked-1)+" liveries selected", JOptionPane.DEFAULT_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
 
+				int dialogButton = 0;
+				dialogButton = JOptionPane.showConfirmDialog(null,
+						"Do you want to move all in " + prop.getProperty("destination") + "?", "WARNING",
+						dialogButton);
+				if (dialogButton == JOptionPane.YES_OPTION) {
+					
+				}
+
 			};
 		});		
 		
