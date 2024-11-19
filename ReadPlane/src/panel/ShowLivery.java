@@ -21,6 +21,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -398,19 +401,36 @@ public class ShowLivery {
 								dialogButton);
 						if (dialogButton == JOptionPane.YES_OPTION) {
 							try {
+								System.out.println(Paths.get(prop.getProperty("destination").substring(0,3)).equals(Paths.get(prop.getProperty("source").substring(0,3))));
 								
-								Utility.getInstance().copieDirectory(title[0]);
-								Utility.getInstance().pause(100);
-		                        Utility.getInstance().deleteDirectory(title[0]);
+								
+								if (Paths.get(prop.getProperty("destination").substring(0,3)).equals(Paths.get(prop.getProperty("source").substring(0,3)))) {
 									
-						  //      Files.move(Paths.get(prop.getProperty("source")), Paths.get(prop.getProperty("destination")), StandardCopyOption.REPLACE_EXISTING);
-
-								panels[number].removeAll();
-								JLabel label1 = Utility.getInstance().labelMessage(title[1],
-										"Moved to " + prop.getProperty("destination"));
-								panels[number].add(label1);
-								panel.updateUI();
-
+									try {
+										Files.move(Paths.get(prop.getProperty("source")+"\\"+title[0]),
+												  Paths.get(prop.getProperty("destination")+"\\"+title[0]),
+												  StandardCopyOption.REPLACE_EXISTING);
+									} catch (Exception e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}		
+									
+									System.out.println("source "+Paths.get(prop.getProperty("source")));
+									System.out.println("destination "+Paths.get(prop.getProperty("destination")));
+								
+								} else {
+									  Utility.getInstance().copieDirectory(title[0]);
+									  Utility.getInstance().deleteDirectory(title[0]);
+								 	  
+								}
+									
+							  
+								  
+								  panels[number].removeAll(); JLabel label1 =
+								  Utility.getInstance().labelMessage(title[1], "Moved to " +
+								  prop.getProperty("destination")); panels[number].add(label1);
+								  panel.updateUI();
+								 
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								System.out.println(e1.getMessage());
