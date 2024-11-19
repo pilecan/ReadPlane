@@ -264,11 +264,38 @@ public class Utility {
 		copyDirectories = new CopyDirectories();
 		try {
 			copyDirectories.copy(prop.getProperty("source"), prop.getProperty("destination"), name);
+			pause(200);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		
+	}
+	
+	public void renameTo(String source, String destination) {
+	    // Create an object of the File class 
+        // Replace the file path with path of the directory 
+        File file = new File(source); 
+  
+        // Create an object of the File class 
+        // Replace the file path with path of the directory 
+        File rename = new File(destination); 
+  
+        // store the return value of renameTo() method in 
+        // flag 
+        boolean flag = file.renameTo(rename); 
+  
+        // if renameTo() return true then if block is 
+        // executed 
+        if (flag == true) { 
+            System.out.println("File Successfully Rename"); 
+        } 
+        // if renameTo() return false then else block is 
+        // executed 
+        else { 
+            System.out.println("Operation Failed"); 
+        } 
 		
 	}
 	
