@@ -208,10 +208,10 @@ public class ShowLivery {
 				int cptChecked = 1;
 				
 				for (int cpt = 0; cpt <= listAircraft.size()-1; cpt++) {
-					System.out.println(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath());
+				//	System.out.println(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath());
 
 					if (checkboxes[cpt].isSelected()){
-						System.out.println(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath());
+				//		System.out.println(listAircraft.get(cpt).getTitle()+"-"+listAircraft.get(cpt).getPath());
 						line += (cptChecked++)+")"+listAircraft.get(cpt).getTitle()+" / "+listAircraft.get(cpt).getPath()+"<br>";
 					}
 					
@@ -226,18 +226,37 @@ public class ShowLivery {
 				editorScrollPane.setPreferredSize(new Dimension(350, 145));
 				editorScrollPane.setMinimumSize(new Dimension(300, 100));
 				
-				Object[] buttons = { "Move to", "Delete All", "Cancel" };
+				Object[] buttons = { "Move All", "Delete All", "Cancel" };
 
 				int returnchoice = JOptionPane.showOptionDialog(null, editorScrollPane,
 						(cptChecked-1)+" liveries selected", JOptionPane.DEFAULT_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
 
-				int dialogButton = 0;
-				dialogButton = JOptionPane.showConfirmDialog(null,
-						"Do you want to move all in " + prop.getProperty("destination") + "?", "WARNING",
-						dialogButton);
-				if (dialogButton == JOptionPane.YES_OPTION) {
+				if (returnchoice == JOptionPane.YES_OPTION) {
+					int dialogButton = JOptionPane.showConfirmDialog(null,
+							"Do you want to move all to " + prop.getProperty("destination") + "?", "WARNING",
+							returnchoice);
 					
+					if (dialogButton == JOptionPane.YES_OPTION) {
+						for (int cpt = 0; cpt <= listAircraft.size()-1; cpt++) {
+
+							if (checkboxes[cpt].isSelected()){
+								System.out.println("Number "+cpt+")"+listAircraft.get(cpt).getPath());
+								if (Utility.getInstance().renameTo(prop.getProperty("source"), prop.getProperty("destination"),listAircraft.get(cpt).getPath() )){
+									  panels[cpt].removeAll(); JLabel label1 =
+									  Utility.getInstance().labelMessage(listAircraft.get(cpt).getPath(), "Moved to " +
+									  prop.getProperty("destination")); 
+									  panels[cpt].add(label1);
+									  panel.updateUI();
+								}
+								//line += (cptChecked++)+")"+listAircraft.get(cpt).getTitle()+" / "+listAircraft.get(cpt).getPath()+"<br>";
+							}
+							
+						}
+						
+					}
+
+				
 				}
 
 			};
@@ -282,7 +301,7 @@ public class ShowLivery {
 
 	}
 
-	public JPanel createPanel(JPanel panel,String type, String search) {
+	public JPanel createPanel(JPanel panelResult,String type, String search) {
 
 		FilesFinder filesFinder = new FilesFinder();
 		filesFinder.grabPath(prop,type, search);
@@ -299,8 +318,8 @@ public class ShowLivery {
  
 		System.out.println("checkboxes>>>>>"+checkboxes.length);
 		
-		panel.setLayout(new GridLayout(filesFinder.getListAircraft().size(), 1, 10, 10));
-		panel.setSize(100, 50);
+		panelResult.setLayout(new GridLayout(filesFinder.getListAircraft().size(), 1, 10, 10));
+		panelResult.setSize(100, 50);
 
 		for (int cpt = 0; cpt <= filesFinder.getListAircraft().size()-1; cpt++) {
 		    panels[cpt] = new JPanel();
@@ -401,35 +420,17 @@ public class ShowLivery {
 								dialogButton);
 						if (dialogButton == JOptionPane.YES_OPTION) {
 							try {
-								System.out.println(Paths.get(prop.getProperty("destination").substring(0,3)).equals(Paths.get(prop.getProperty("source").substring(0,3))));
-								
-								
-								if (Paths.get(prop.getProperty("destination").substring(0,3)).equals(Paths.get(prop.getProperty("source").substring(0,3)))) {
-									
-									try {
-										Files.move(Paths.get(prop.getProperty("source")+"\\"+title[0]),
-												  Paths.get(prop.getProperty("destination")+"\\"+title[0]),
-												  StandardCopyOption.REPLACE_EXISTING);
-									} catch (Exception e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}		
-									
-									System.out.println("source "+Paths.get(prop.getProperty("source")));
-									System.out.println("destination "+Paths.get(prop.getProperty("destination")));
-								
-								} else {
-									  Utility.getInstance().copieDirectory(title[0]);
-									  Utility.getInstance().deleteDirectory(title[0]);
-								 	  
+								System.out.println("Same drive "+Paths.get(prop.getProperty("destination").substring(0,3)).equals(Paths.get(prop.getProperty("source").substring(0,3))));
+							
+								if (Utility.getInstance().renameTo(prop.getProperty("source"), prop.getProperty("destination"),title[0])) {
+									  panels[number].removeAll(); 
+									  JLabel label1 = Utility.getInstance().labelMessage(title[1], "Moved to " +
+									      prop.getProperty("destination")); 
+									  panels[number].add(label1);
+									  panelResult.updateUI();
 								}
-									
 							  
 								  
-								  panels[number].removeAll(); JLabel label1 =
-								  Utility.getInstance().labelMessage(title[1], "Moved to " +
-								  prop.getProperty("destination")); panels[number].add(label1);
-								  panel.updateUI();
 								 
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
@@ -453,7 +454,7 @@ public class ShowLivery {
 
 								JLabel label1 = Utility.getInstance().labelMessage(title[1], "Deleted");
 								panels[number].add(label1);
-								panel.updateUI();
+								panelResult.updateUI();
 
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
@@ -503,15 +504,15 @@ public class ShowLivery {
 			panels[cpt].add(checkboxes[cpt], BorderLayout.BEFORE_FIRST_LINE);
 			//panels[cpt].add(click);
 			 		    
-		   panel.add(panels[cpt]);
+		   panelResult.add(panels[cpt]);
 			
 			
 
 		}
 		System.out.println(type+" "+search);
-		panel.revalidate();
+		panelResult.revalidate();
 
-		return panel;
+		return panelResult;
 	}
 
 	public JPanel getButtons() {
