@@ -260,27 +260,30 @@ public class Utility {
 		
 	}
 	
-	public void copieDirectory(String name) {
+	public boolean copieDirectory(String source, String destination, String fineName) {
 		copyDirectories = new CopyDirectories();
+		boolean flag = false;
 		try {
-			copyDirectories.copy(prop.getProperty("source"), prop.getProperty("destination"), name);
+			copyDirectories.copy(source, source, fineName);
 			pause(200);
+			flag = true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.toString());
 		}
 		
+		return flag;
 		
 	}
 	
-	public void renameTo(String source, String destination) {
+	public boolean renameTo(String source, String destination, String fileName) {
 	    // Create an object of the File class 
         // Replace the file path with path of the directory 
-        File file = new File(source); 
+        File file = new File(source+"\\"+fileName); 
   
         // Create an object of the File class 
         // Replace the file path with path of the directory 
-        File rename = new File(destination); 
+        File rename = new File(destination+"\\"+fileName); 
   
         // store the return value of renameTo() method in 
         // flag 
@@ -288,25 +291,36 @@ public class Utility {
   
         // if renameTo() return true then if block is 
         // executed 
-        if (flag == true) { 
+        if (flag) { 
             System.out.println("File Successfully Rename"); 
         } 
         // if renameTo() return false then else block is 
         // executed 
         else { 
-            System.out.println("Operation Failed"); 
+            System.out.println("Operation Failed trying copy and delete"); 
+			flag =  copieDirectory(source, destination, fileName);
+			if (flag) { 
+				 flag = deleteDirectory(source, fileName);
+
+			}
         } 
 		
+        return flag;
 	}
 	
-	public void deleteDirectory(String name) {
+	public boolean deleteDirectory(String source, String fileName) {
         System.gc();
+        boolean flag = false;
 		try {
-			FileUtils.forceDelete(new File(prop.getProperty("source") +"\\"+ name));
+			FileUtils.forceDelete(new File(source +"\\"+ fileName));
+			flag = true;
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return flag;
 		
 	}
 
