@@ -208,7 +208,7 @@ public class Utility {
 		JProgressBar bar = new JProgressBar();
 		bar.setIndeterminate(true);
 		bar.setStringPainted(true);
-		bar.setString("Planet is Calling...");
+		bar.setString("Working on it...");
 		dialog.add(bar);
 		dialog.pack();
 		dialog.setLocationRelativeTo(parent);
@@ -264,7 +264,7 @@ public class Utility {
 		copyDirectories = new CopyDirectories();
 		boolean flag = false;
 		try {
-			copyDirectories.copy(source, source, fineName);
+			copyDirectories.copy(source, destination, fineName);
 			pause(200);
 			flag = true;
 		} catch (Exception e) {
