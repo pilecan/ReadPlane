@@ -232,12 +232,12 @@ public class ShowLivery {
 						(cptChecked-1)+" liveries selected", JOptionPane.DEFAULT_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
 
-				if (returnchoice == JOptionPane.YES_OPTION) {
-					int dialogButton = JOptionPane.showConfirmDialog(null,
+				if (returnchoice == 0) {
+					int confirmChoice = JOptionPane.showConfirmDialog(null,
 							"Do you want to move all to " + prop.getProperty("destination") + "?", "WARNING",
 							returnchoice);
 					
-					if (dialogButton == JOptionPane.YES_OPTION) {
+					if (confirmChoice == JOptionPane.YES_OPTION) {
 						
 						dialog = Utility.getInstance().panelWait();
 
@@ -276,6 +276,50 @@ public class ShowLivery {
 					}
 
 				
+				} else if (returnchoice == 1) {
+					int confirmChoice = JOptionPane.showConfirmDialog(null,
+							"Do you want to delete all ?", "WARNING",
+							returnchoice);
+					
+					if (confirmChoice == JOptionPane.YES_OPTION) {
+						
+						dialog = Utility.getInstance().panelWait();
+
+				    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
+					  		{
+					  		    protected Void doInBackground()
+					  		    {
+									
+									for (int cpt = 0; cpt < listAircraft.size(); cpt++) {
+
+										if (checkboxes[cpt].isSelected()){
+											System.out.println("Number "+cpt+")"+listAircraft.get(cpt).getPath());
+											if ( Utility.getInstance().deleteDirectory(prop.getProperty("source"), listAircraft.get(cpt).getPath())){
+												  panels[cpt].removeAll(); 
+												  JLabel label1 =
+												  Utility.getInstance().labelMessage(listAircraft.get(cpt).getPath(), " deleted from " +
+												  prop.getProperty("source")); 
+												  panels[cpt].add(label1);
+												  panelResult.updateUI();
+											}
+											//line += (cptChecked++)+")"+listAircraft.get(cpt).getTitle()+" / "+listAircraft.get(cpt).getPath()+"<br>";
+										}
+										
+									}
+				  		        return null;
+				  		    }
+				  		 
+				  		    @Override
+				  		    protected void done()
+				  		    {
+				  		        dialog.dispose();
+				  		    }
+				  		};
+				  		worker.execute();
+				  		dialog.setVisible(true); // will block but with a responsive GUI		              
+						
+					}
+					
 				}
 
 			};
@@ -468,10 +512,11 @@ public class ShowLivery {
 
 						if (dialogButton == JOptionPane.YES_OPTION) {
 							try {
-								FileUtils.deleteDirectory(new File(source + title[0]));
+								Utility.getInstance().deleteDirectory(prop.getProperty("source"),title[0]);
 								panels[number].removeAll();
 
-								JLabel label1 = Utility.getInstance().labelMessage(title[1], "Deleted");
+								JLabel label1 = Utility.getInstance().labelMessage(title[1], " deleted from " +
+										  prop.getProperty("source"));
 								panels[number].add(label1);
 								panelResult.updateUI();
 
