@@ -238,21 +238,40 @@ public class ShowLivery {
 							returnchoice);
 					
 					if (dialogButton == JOptionPane.YES_OPTION) {
-						for (int cpt = 0; cpt <= listAircraft.size()-1; cpt++) {
+						
+						dialog = Utility.getInstance().panelWait();
 
-							if (checkboxes[cpt].isSelected()){
-								System.out.println("Number "+cpt+")"+listAircraft.get(cpt).getPath());
-								if (Utility.getInstance().renameTo(prop.getProperty("source"), prop.getProperty("destination"),listAircraft.get(cpt).getPath() )){
-									  panels[cpt].removeAll(); JLabel label1 =
-									  Utility.getInstance().labelMessage(listAircraft.get(cpt).getPath(), "Moved to " +
-									  prop.getProperty("destination")); 
-									  panels[cpt].add(label1);
-									  panel.updateUI();
-								}
-								//line += (cptChecked++)+")"+listAircraft.get(cpt).getTitle()+" / "+listAircraft.get(cpt).getPath()+"<br>";
-							}
-							
-						}
+				    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
+					  		{
+					  		    protected Void doInBackground()
+					  		    {
+									
+									for (int cpt = 0; cpt < listAircraft.size(); cpt++) {
+
+										if (checkboxes[cpt].isSelected()){
+											System.out.println("Number "+cpt+")"+listAircraft.get(cpt).getPath());
+											if (Utility.getInstance().renameTo(prop.getProperty("source"), prop.getProperty("destination"),listAircraft.get(cpt).getPath() )){
+												  panels[cpt].removeAll(); JLabel label1 =
+												  Utility.getInstance().labelMessage(listAircraft.get(cpt).getPath(), "Moved to " +
+												  prop.getProperty("destination")); 
+												  panels[cpt].add(label1);
+												  panelResult.updateUI();
+											}
+											//line += (cptChecked++)+")"+listAircraft.get(cpt).getTitle()+" / "+listAircraft.get(cpt).getPath()+"<br>";
+										}
+										
+									}
+				  		        return null;
+				  		    }
+				  		 
+				  		    @Override
+				  		    protected void done()
+				  		    {
+				  		        dialog.dispose();
+				  		    }
+				  		};
+				  		worker.execute();
+				  		dialog.setVisible(true); // will block but with a responsive GUI		              
 						
 					}
 
