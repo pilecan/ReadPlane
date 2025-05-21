@@ -26,6 +26,7 @@ public class FilesFinder {
     public void findThumbNail( String name,File file, Aircraft aircraft)
     
     {
+    	String thumbnail = "";
         File[] list = file.listFiles();
         if(list!=null)
         for (File fil : list)
@@ -34,18 +35,28 @@ public class FilesFinder {
             {
                 findThumbNail(name,fil,aircraft);
             }
-            else if (name.equalsIgnoreCase(fil.getName()))
+            else if (name.equalsIgnoreCase(fil.getName()) || "thumbnail.png".equalsIgnoreCase(fil.getName()))
+          //     else if (fil.getName().toLowerCase().contains("thumbnail"))
             {
-              //  System.out.println(fil.getParentFile()+"/"+name);
-                File f = new File((fil.getParentFile().toString()+"/"+name));
-                if (!f.isFile()) { 
-					System.out.println(">"+f.getParentFile().toString() );
-                }
-                aircraft.setDirectory(fil.getParentFile().toString());
-				if (aircraft.getDirectory() != null && !aircraft.getDirectory().toLowerCase().contains("thumbnail.jpg")) {
-				}
+               
+               thumbnail = fil.getName().toLowerCase().contains(".jpg")?"thumbnail.jpg":"thumbnail.png";
+               aircraft.setDirectory(fil.getParentFile().toString()+"\\"+thumbnail);
+
+               System.out.println(">>>"+thumbnail);
+
+				/*
+				 * File f = new File((fil.getParentFile().toString()+"/"+name));
+				 * 
+				 * if (!f.isFile()) { //System.out.println(">"+f.getParentFile().toString() ); }
+				 * 
+				 * 
+				 * if (aircraft.getDirectory() != null &&
+				 * !aircraft.getDirectory().toLowerCase().contains("thumbnail.jpg")) { }
+				 */				
             }
         }
+        
+        //System.out.println("aircraft.toString() = "+aircraft.toString());
     }
     
     public Aircraft readJson(String directory)
@@ -76,7 +87,7 @@ public class FilesFinder {
     	source = prop.getProperty("source");
     	
     	listAircraft = new ArrayList<Aircraft>();
-    	
+
 	    File file = new File(source);
 	    String[] directories = file.list(new FilenameFilter() {
 	      public boolean accept(File current, String name) {
@@ -109,12 +120,12 @@ public class FilesFinder {
 					
 					if (isFound) {
 						aircraft.setPath(path);
-						findThumbNail( "thumbnail.JPG",new File(source+"/"+path), aircraft);
+						findThumbNail( "thumbnail.jpg",new File(source+"/"+path), aircraft);
 						
 						if (aircraft.getDirectory() == null) {
-							System.out.println(aircraft.getPath());
+/*							System.out.println(aircraft.getPath());
 							System.out.println(aircraft.getDirectory());
-							 File directory = new File("./");
+*/							 File directory = new File("./");
 							 String str = directory.getAbsolutePath().toString();
 							 str = str.replace(".", "image");
 							 aircraft.setDirectory(str);
