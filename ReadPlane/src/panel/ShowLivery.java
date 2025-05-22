@@ -129,25 +129,7 @@ public class ShowLivery {
 	           int key = e.getKeyCode();
 	           if (key == KeyEvent.VK_ENTER) {
 	        	   
-				dialog = Utility.getInstance().panelWait();
-
-		    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
-			  		{
-			  		    protected Void doInBackground()
-			  		    {
-							panelResult.removeAll();
-							panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
-		  		        return null;
-		  		    }
-		  		 
-		  		    @Override
-		  		    protected void done()
-		  		    {
-		  		        dialog.dispose();
-		  		    }
-		  		};
-		  		worker.execute();
-		  		dialog.setVisible(true); // will block but with a responsive GUI	
+	        	   showPanel();
 	              }
 	           }
 	         });
@@ -170,26 +152,9 @@ public class ShowLivery {
 		buttonSearch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dialog = Utility.getInstance().panelWait();
-
-		    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
-			  		{
-			  		    protected Void doInBackground()
-			  		    {
-							panelResult.removeAll();
-							panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
-		  		        return null;
-		  		    }
-		  		 
-		  		    @Override
-		  		    protected void done()
-		  		    {
-		  		        dialog.dispose();
-		  		    }
-		  		};
-		  		worker.execute();
-		  		dialog.setVisible(true); // will block but with a responsive GUI		              
+				showPanel();
 			};
+			
 		});
 
 		
@@ -320,6 +285,28 @@ public class ShowLivery {
 
 		return containerPane;
 
+	}
+	
+	private void showPanel() {
+		dialog = Utility.getInstance().panelWait();
+
+  	    SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
+	  		{
+	  		    protected Void doInBackground()
+	  		    {
+					panelResult.removeAll();
+					panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
+		        return null;
+		    }
+		 
+		    @Override
+		    protected void done()
+		    {
+		        dialog.dispose();
+		    }
+		};
+		worker.execute();
+		dialog.setVisible(true); // will block but with a responsive GUI		              
 	}
 
 	public JPanel createPanel(JPanel panelResult,String type, String search) {
@@ -567,26 +554,8 @@ public class ShowLivery {
 				isFromAdd = true;
 				selectDirectory("Select Source Folder", "source");
 				Utility.getInstance().savePrefProperties();
-				dialog = Utility.getInstance().panelWait();
-
-		    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
-			  		{
-			  		    protected Void doInBackground()
-			  		    {
-							panelResult.removeAll();
-							panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
-		  		        return null;
-		  		    }
-		  		 
-		  		    @Override
-		  		    protected void done()
-		  		    {
-		  		        dialog.dispose();
-		  		    }
-		  		};
-		  		worker.execute();
-		  		dialog.setVisible(true); // will block but with a responsive GUI	
-
+				
+				showPanel();
 			}
 		});
 		
