@@ -96,6 +96,10 @@ public class ShowLivery {
     private List<Aircraft> listAircraft = null;
 
 	private static Properties prop;
+	
+	private JComboBox<String>combofilter = new JComboBox<>();
+	private JTextField textFilter = new JTextField();
+
 
 	public ShowLivery(String source, String destination, Properties prop) {
 		super();
@@ -111,7 +115,6 @@ public class ShowLivery {
 
 		JButton buttonSearch = new JButton("Search");
 
-		JComboBox<String>combofilter = new JComboBox<>();
 		combofilter.addItem("All");
 		combofilter.addItem("Directory");
 		combofilter.addItem("Title");
@@ -119,7 +122,6 @@ public class ShowLivery {
 		combofilter.addItem("Creator");
 		combofilter.setSelectedItem("All");
 
-		JTextField textFilter = new JTextField();
 		textFilter.setEditable(false);
 		textFilter.addKeyListener
 	      (new KeyAdapter() {
@@ -564,7 +566,27 @@ public class ShowLivery {
 			public void actionPerformed(ActionEvent e) {
 				isFromAdd = true;
 				selectDirectory("Select Source Folder", "source");
-	//			Utility.getInstance().savePrefProperties();
+				Utility.getInstance().savePrefProperties();
+				dialog = Utility.getInstance().panelWait();
+
+		    	  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
+			  		{
+			  		    protected Void doInBackground()
+			  		    {
+							panelResult.removeAll();
+							panelResult = createPanel(panelResult, (String) combofilter.getSelectedItem(), textFilter.getText());
+		  		        return null;
+		  		    }
+		  		 
+		  		    @Override
+		  		    protected void done()
+		  		    {
+		  		        dialog.dispose();
+		  		    }
+		  		};
+		  		worker.execute();
+		  		dialog.setVisible(true); // will block but with a responsive GUI	
+
 			}
 		});
 		
