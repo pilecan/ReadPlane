@@ -208,7 +208,7 @@ public class Utility {
 		JProgressBar bar = new JProgressBar();
 		bar.setIndeterminate(true);
 		bar.setStringPainted(true);
-		bar.setString("Working on it...");
+		bar.setString("Planet is Calling...");
 		dialog.add(bar);
 		dialog.pack();
 		dialog.setLocationRelativeTo(parent);
@@ -297,7 +297,7 @@ public class Utility {
         // if renameTo() return false then else block is 
         // executed 
         else { 
-            System.out.println("Operation Failed trying copy and delete"); 
+            System.out.println("Operation Failed trying remane"); 
 			flag =  copieDirectory(source, destination, fileName);
 			if (flag) { 
 				 flag = deleteDirectory(source, fileName);
