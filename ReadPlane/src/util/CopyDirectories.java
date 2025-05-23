@@ -7,23 +7,23 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class CopyDirectories {
-    
-	
+
+
 	public CopyDirectories() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-    
-    
-    
+
+
+
     public void copy(String source, String destination, String directory) throws Exception {
         Path sourceDir = Paths.get( source+"\\"+directory);
         Path destinationDir = Paths.get(destination+"\\"+directory);
-        
+
         if ((source == null) || (destination == null)) {
         	throw new Exception("Wrong path for source or destination directory");
         }
-        		
+
 
         // Traverse the file tree and copy each file/directory.
         Files.walk(sourceDir)
@@ -38,9 +38,9 @@ public class CopyDirectories {
                 });
         System.out.println("done...");
     }
-   	
-    	
-    
+
+
+
 
 	public static void main(String[] args) throws IOException {
         Path sourceDir = Paths.get( "c:\\Users\\Pierre\\Downloads\\msfs\\fenix\\fnx-aircraft-320-QHVNA587_8K\\");
